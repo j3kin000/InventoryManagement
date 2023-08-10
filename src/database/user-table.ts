@@ -1,3 +1,4 @@
+import {UserProps} from '../store/user/user.types';
 import DatabaseManager from './database';
 
 const tableName = 'User';
@@ -9,10 +10,6 @@ const sqlQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (
 
 const db = new DatabaseManager(sqlQuery);
 
-export type UserProps = {
-  uid: string;
-  pin: string;
-};
 export const POST_USER = async (data: UserProps) => {
   try {
     const sqlQuery = `INSERT INTO ${tableName} (uid, pin) VALUES (?, ?)`;
@@ -30,8 +27,8 @@ export const FETCH_USER = async (pin: string) => {
     const sqlQuery = `SELECT * FROM ${tableName} `;
     const parameters: string[] = [];
     const user = await db.execute(sqlQuery, parameters);
-    console.log('user', user);
-    return user;
+    console.log('user', user.rows.item(0));
+    return user.rows.item(0);
   } catch (error) {
     return null;
   }
@@ -45,6 +42,7 @@ export const PUT_USER = async (data: UserProps) => {
     console.log('user', user);
     return user;
   } catch (error) {
+    console.log('PUrT ERROR ', error);
     return null;
   }
 };

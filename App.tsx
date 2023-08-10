@@ -7,6 +7,8 @@ import {
   POST_USER,
   PUT_USER,
 } from './src/database/user-table';
+import Navigation from './src/navigation/root.navigation';
+// uuid.v4(); // ⇨ '11edc52b-2918-4d71-9058-f7285e29d894'
 
 const App = () => {
   useEffect(() => {
@@ -16,20 +18,16 @@ const App = () => {
       //   pin: '12122',
       // });
       // await DELETE_USER();
-      await PUT_USER({pin: '1000', uid: 'asdad3a'});
-      const data = await FETCH_USER('1000');
+      await PUT_USER({pin: '10201', uid: ''});
+      // const data = await FETCH_USER('10001');
 
-      console.log('datass', data.rows.item(0));
+      // console.log('datass', data.rows.item(0));
     };
 
     init();
   }, []);
 
-  return (
-    <View>
-      <Text>App</Text>
-    </View>
-  );
+  return <Navigation />;
 };
 
 export default App;

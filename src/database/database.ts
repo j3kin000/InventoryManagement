@@ -50,7 +50,7 @@ class DatabaseManager {
       this.db
         .close()
         .then(status => {
-          console.log('Database CLOSED', status);
+          console.log('Database CLOSED');
         })
         .catch(error => {
           console.log('Database CLOSED error', error);
