@@ -6,7 +6,7 @@ import {
   AnyAction,
 } from 'redux';
 import {persistReducer, persistStore, PersistConfig} from 'redux-persist';
-import thunk from 'redux-thunk';
+import thunk, {ThunkDispatch} from 'redux-thunk';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {rootReducer} from './root-reducer';
 
@@ -16,10 +16,10 @@ type PersistConfigProps = PersistConfig<RootState> & {
   blacklist: (keyof RootState)[];
 };
 
-const persistConfig: PersistConfigProps = {
+const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  blacklist: ['user'],
+  // blacklist: ['user'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -29,5 +29,6 @@ export const store = createStore(
   undefined,
   compose(applyMiddleware(thunk)),
 );
+export type TypedDispatch = ThunkDispatch<RootState, any, AnyAction>;
 
 export const persistor = persistStore(store);

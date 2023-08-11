@@ -33,3 +33,18 @@ export const putUserAsync = (data: UserProps) => async (dispatch: Dispatch) => {
     dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_FAILED, error));
   }
 };
+
+export const postFirstTimeOpenAsync =
+  (isFirstTimeOpen: boolean) =>
+  async (dispatch: Dispatch): Promise<void> => {
+    try {
+      dispatch(
+        createAction(
+          USER_ACTION_TYPES.POST_FIRST_TIME_OPEN_SUCCESS,
+          isFirstTimeOpen,
+        ),
+      );
+    } catch (error) {
+      dispatch(createAction(USER_ACTION_TYPES.POST_FIRST_TIME_OPEN_FAILED));
+    }
+  };

@@ -5,12 +5,14 @@ const INITIAL_STATE: UserState = {
   currentUser: null,
   isLoading: false,
   error: null,
+  isFirstTimeOpen: false,
 };
 export default (state = INITIAL_STATE, action: AnyAction) => {
   switch (action.type) {
     case USER_ACTION_TYPES.POST_USER_START:
     case USER_ACTION_TYPES.FETCH_USER_START:
     case USER_ACTION_TYPES.PUT_USER_START:
+    case USER_ACTION_TYPES.POST_FIRST_TIME_OPEN_START:
       return {...state, isLoading: true};
 
     case USER_ACTION_TYPES.POST_USER_SUCCESS:
@@ -18,9 +20,13 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
     case USER_ACTION_TYPES.PUT_USER_SUCCESS:
       return {...state, isLoading: false, currentUser: action.payload};
 
+    case USER_ACTION_TYPES.POST_FIRST_TIME_OPEN_SUCCESS:
+      return {...state, isLoading: false, isFirstTimeOpen: true};
+
     case USER_ACTION_TYPES.POST_USER_FAILED:
     case USER_ACTION_TYPES.FETCH_USER_FAILED:
     case USER_ACTION_TYPES.PUT_USER_FAILED:
+    case USER_ACTION_TYPES.POST_FIRST_TIME_OPEN_FAILED:
       return {...state, isLoading: false, error: action.payload};
 
     default:

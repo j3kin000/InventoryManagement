@@ -10,10 +10,14 @@ export enum USER_ACTION_TYPES {
   PUT_USER_START = 'PUT_USER_START',
   PUT_USER_SUCCESS = 'PUT_USER_SUCCESS',
   PUT_USER_FAILED = 'PUT_USER_FAILED',
+
+  POST_FIRST_TIME_OPEN_START = 'POST_FIRST_TIME_OPEN_START',
+  POST_FIRST_TIME_OPEN_SUCCESS = 'POST_FIRST_TIME_OPEN_SUCCESS',
+  POST_FIRST_TIME_OPEN_FAILED = 'POST_FIRST_TIME_OPEN_FAILED',
 }
 
 export type UserProps = {
-  uid: string;
+  uid: string | number[];
   pin: string;
 };
 
@@ -21,4 +25,5 @@ export type UserState = {
   currentUser: UserProps | null;
   isLoading: boolean;
   error: Error | null;
+  isFirstTimeOpen: boolean;
 };
