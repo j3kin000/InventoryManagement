@@ -1,10 +1,13 @@
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import React, {FC, useEffect, useRef} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../navigation/root.navigation';
 import {useSelector} from 'react-redux';
 import {selectUserIsFirstTimeOpen} from '../../store/user/user.selector';
+import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
+import CustomButton from '../../components/custom-button/custom-button.component';
+import Logo from '../../components/logo/logo.component';
 
 export type SplashScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'LockScreen'>;
@@ -32,15 +35,47 @@ const SplashScreen: FC<SplashScreenProps> = ({navigation}) => {
     navigation.replace('LockScreen', {pinStatus});
   };
   return (
-    <View>
-      <Text>SplashScreen</Text>
+    <ImageBackground
+      source={require('../../../assets/splash-backgrounds.png')}
+      style={globalStyles.container}>
+      <View style={{marginVertical: 90}} />
+      <View
+        style={{
+          flex: 1,
+        }}>
+        <View style={{alignItems: 'center'}}>
+          <Logo />
+        </View>
+        <Text
+          numberOfLines={2}
+          style={{
+            letterSpacing: 3,
+            fontSize: 32,
+            color: mainColors.primary,
+            marginVertical: 60,
+            textAlign: 'left',
+            paddingLeft: 40,
+          }}>
+          Do more to grow {'\n'}your business.
+        </Text>
+      </View>
       {!userIsFirstTimeOpen && (
-        <Button
-          title="Set Up Pin"
-          onPress={() => navigateToLockScreen('choose')}
-        />
+        <View
+          style={{
+            position: 'absolute',
+            width: '95%',
+            bottom: 40,
+            alignSelf: 'center',
+            backgroundColor: mainColors.secondary,
+            borderRadius: 50,
+          }}>
+          <CustomButton
+            handleOnPress={() => navigateToLockScreen('choose')}
+            text="Get Started"
+          />
+        </View>
       )}
-    </View>
+    </ImageBackground>
   );
 };
 

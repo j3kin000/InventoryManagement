@@ -1,22 +1,13 @@
-import {Alert, Button, StyleSheet, Text, View} from 'react-native';
-import React, {FC, useState} from 'react';
-import PINCode, {
-  hasUserSetPinCode,
-  resetPinCodeInternalStates,
-  deleteUserPinCode,
-} from '@haskkor/react-native-pincode';
+import React, {FC} from 'react';
+import PINCode, {hasUserSetPinCode} from '@haskkor/react-native-pincode';
 import {RouteProp} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/root.navigation';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import {StackNavigationProp} from '@react-navigation/stack';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {useDispatch} from 'react-redux';
-import {
-  postFirstTimeOpenAsync,
-  postUserAsync,
-} from '../../store/user/user.action';
-import uuid from 'react-native-uuid';
+import {postFirstTimeOpenAsync} from '../../store/user/user.action';
 import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
+import {BackHandler, View} from 'react-native';
 
 export type LockScreenProps = {
   navigation: StackNavigationProp<RootStackParamList, 'LockScreen'>;
@@ -36,16 +27,6 @@ const customTexts = {
     subTitle: 'Enter 4- digit PIN to access',
     repeat: 'Enter PIN again ',
   },
-  // locked: {
-  //   title: 'Custom locked title',
-  //   subTitle: `You have entered wrong PIN {{maxAttempt}} times. The app is locked in {{lockDuration}}.`,
-  //   lockedText: 'Locked',
-  // },
-  // reset: {
-  //   title: 'Custom reset PIN title',
-  //   subTitle: `Custom reset PIN sub title`,
-  //   confirm: 'Custom confirm message',
-  // },
 };
 
 const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
@@ -67,7 +48,7 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
     <View style={{...globalStyles.container}}>
       <PINCode
         status={pinStatus}
-        touchIDDisabled={true}
+        // touchIDDisabled={true}
         finishProcess={_finishProcess}
         colorCircleButtons={mainColors.secondary}
         colorPassword={mainColors.dark}
@@ -78,7 +59,7 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
         titleConfirm={customTexts.set.title}
         stylePinCodeColorTitle={mainColors.dark}
         stylePinCodeColorSubtitle={mainColors.dark}
-        stylePinCodeTextTitle={{fontWeight: 'bold'}}
+        stylePinCodeTextTitle={{fontWeight: 'bold', fontSize: 32}}
         subtitleChoose={customTexts.set.subTitle}
         subtitleConfirm={customTexts.set.repeat}
         subtitleEnter={customTexts.enter.subTitle}
@@ -100,15 +81,19 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
           </View>
         )}
         timeLocked={0}
+        disableLockScreen={true}
         styleLockScreenButton={{backgroundColor: mainColors.secondary}}
+        iconButtonDeleteDisabled={true}
+        onClickButtonLockedPage={() => {
+          console.log('Quitting');
+          BackHandler.exitApp();
+        }}
       />
     </View>
   );
 };
 
 export default LockScreen;
-
-const styles = StyleSheet.create({});
 
 // const _showEnterPinLock = async () => {
 //   const hasPin = await hasUserSetPinCode();
