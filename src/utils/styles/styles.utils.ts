@@ -8,6 +8,6 @@ export const mainColors = {
 export const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: mainColors.primary,
   },
 });

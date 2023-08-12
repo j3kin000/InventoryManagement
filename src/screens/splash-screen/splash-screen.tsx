@@ -56,7 +56,7 @@ const SplashScreen: FC<SplashScreenProps> = ({navigation}) => {
             textAlign: 'left',
             paddingLeft: 40,
           }}>
-          Do more to grow {'\n'}your business.
+          Do more to track {'\n'}your business.
         </Text>
       </View>
       {!userIsFirstTimeOpen && (

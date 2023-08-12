@@ -48,7 +48,7 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
     <View style={{...globalStyles.container}}>
       <PINCode
         status={pinStatus}
-        // touchIDDisabled={true}
+        touchIDDisabled={true}
         finishProcess={_finishProcess}
         colorCircleButtons={mainColors.secondary}
         colorPassword={mainColors.dark}

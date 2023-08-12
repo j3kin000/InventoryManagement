@@ -12,13 +12,15 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {globalStyles} from '../utils/styles/styles.utils';
 import SplashScreen from '../screens/splash-screen/splash-screen';
 import LockScreen from '../screens/lock-screen/lock-screen';
+import {InventoryProps} from '../database/inventory-table';
+import {ProductProps} from '../database/product-table';
 
 export type RootStackParamList = {
   SplashScreen: undefined;
   LockScreen: {pinStatus: 'choose' | 'enter' | 'locked' | undefined};
   HomeScreen: undefined;
-  InventoryScreen: undefined;
-  ProductScreen: undefined;
+  InventoryScreen: {inventory: InventoryProps};
+  ProductScreen: {product: ProductProps};
 };
 const Stack = createStackNavigator<RootStackParamList>();
 
