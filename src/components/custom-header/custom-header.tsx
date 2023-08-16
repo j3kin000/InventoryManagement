@@ -52,7 +52,7 @@ const CustomHeader = () => {
               fontSize: 18,
               letterSpacing: 1,
             }}>
-            Iventory
+            Inventory
           </Text>
           <View style={{alignItems: 'center'}}>
             <Fontisto name="import" size={24} color="white" />
@@ -100,24 +100,27 @@ const CustomHeader = () => {
               style={{
                 color: 'black',
                 fontWeight: 'bold',
-                fontSize: 20,
+                fontSize: 18,
                 textAlign: 'center',
               }}>
-              321
+              412.311
             </Text>
-            <Text style={{color: '#C2C2C2'}}>Open</Text>
+            <Text style={{color: '#C2C2C2', fontSize: 12, textAlign: 'center'}}>
+              expenditure
+            </Text>
           </View>
+
           <View>
             <Text
               style={{
                 color: 'black',
                 fontWeight: 'bold',
-                fontSize: 20,
+                fontSize: 18,
                 textAlign: 'center',
               }}>
-              11
+              $ 412311
             </Text>
-            <Text style={{color: '#C2C2C2'}}>Closed</Text>
+            <Text style={{color: '#C2C2C2', fontSize: 12}}>Financial gain</Text>
           </View>
         </View>
       </View>

@@ -24,12 +24,12 @@ const CustomButton: FC<CustomButtonProps> = ({
   return (
     <TouchableOpacity
       style={{
-        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
+        paddingHorizontal: 20,
         backgroundColor: mainColors.secondary,
-        borderRadius: 50,
+        borderRadius: 20,
         ...buttonStyle,
       }}
       onPress={handleOnPress}>
@@ -39,9 +39,7 @@ const CustomButton: FC<CustomButtonProps> = ({
           color: mainColors.primary,
           fontWeight: 'bold',
           fontSize: 16,
-          textShadowColor: 'rgba(0, 0, 0, 0.5)', // Color of the drop shadow
-          textShadowOffset: {width: 2, height: 2}, // Offset of the drop shadow
-          textShadowRadius: 5, // Radius of the drop shadow
+
           ...textStyle,
         }}>
         {text}

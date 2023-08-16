@@ -6,32 +6,45 @@ import Octicons from 'react-native-vector-icons/Octicons';
 import FAB from 'react-native-fab';
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {ProductProps} from '../../database/product-table';
+import {debtProps} from '../../store/debt/debt.types';
+import {getDate} from '../../utils/utils';
 
 const data = [
   {
     uid: '0',
     inventoryUid: '1',
-    image: require('../../../assets/curve-line.png'), // Use require here
+    name: 'Rodolfo',
+    item: [
+      {
+        productName: 'Rebisco',
+        image: '',
+        price: '15',
+        itemNo: '12',
+      },
+      {
+        productName: 'Chocolate',
+        price: '19.1',
+        itemNo: '12',
+      },
+    ],
     createdAt: '02/23/23:@3232',
-    productName: 'Rebisco',
     stock: '121',
     originalPrice: '12',
     salesPrice: '15',
   },
 ];
-const Product = () => {
+const Debt = () => {
   const [textWidth, setTextWidth] = useState(0);
 
   const onTextLayout = (event: LayoutChangeEvent) => {
     setTextWidth(event.nativeEvent.layout.width);
   };
-  const renderItem = ({item}: {item: ProductProps}) => {
+  const renderItem = ({item}: {item: debtProps}) => {
     return (
       <View
         style={{
           backgroundColor: mainColors.primary,
           alignSelf: 'center',
-          paddingHorizontal: 10,
           width: '95%',
           marginBottom: 40,
           borderRadius: 10,
@@ -39,87 +52,94 @@ const Product = () => {
           minHeight: 110,
           flexDirection: 'column',
           justifyContent: 'space-between',
-          paddingVertical: 10,
         }}>
-        <View style={{flexDirection: 'row'}}>
-          <View style={{marginRight: 20}}>
-            <Image
-              resizeMethod="resize"
-              source={{uri: 'https://via.placeholder.com/400x225'}}
+        <View>
+          <View
+            style={{
+              borderTopEndRadius: 10,
+              borderTopStartRadius: 10,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              backgroundColor: '#A076F9',
+              paddingVertical: 10,
+              paddingHorizontal: 10,
+            }}>
+            <Text style={{color: mainColors.primary, fontSize: 16}}>
+              {item.name}
+            </Text>
+            <Text
               style={{
-                resizeMode: 'cover',
-                width: 60,
-                height: 60,
-                borderRadius: 10,
-              }}
-            />
-          </View>
-
-          <View style={{flexGrow: 1}}>
-            <View
-              style={{
-                justifyContent: 'space-between',
-                flexDirection: 'row',
+                color: mainColors.primary,
+                fontSize: 16,
               }}>
-              <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                {item.productName}
-              </Text>
+              {item.createdAt}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              paddingVertical: 15,
+              paddingHorizontal: 15,
+              borderBottomColor: mainColors.dark,
+              borderBottomWidth: 0.5,
+            }}>
+            <Text style={{color: mainColors.dark, fontSize: 16}}>Total</Text>
+            <Text
+              style={{
+                color: mainColors.dark,
+                fontSize: 16,
+                fontWeight: 'bold',
+              }}>
+              ₱1212
+            </Text>
+          </View>
+          <View>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <View
                 style={{
-                  backgroundColor: mainColors.grey,
-                  borderRadius: 10,
-                  marginHorizontal: 10,
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
+                }}>
+                <Text style={{paddingHorizontal: 10}}>
+                  {item.item[0].itemNo} X{' '}
+                </Text>
+                <Image
+                  resizeMethod="resize"
+                  source={{uri: 'https://via.placeholder.com/400x225'}}
+                  style={{
+                    resizeMode: 'cover',
+                    width: 30,
+                    height: 30,
+                    borderRadius: 10,
+                  }}
+                />
+                <Text style={{paddingHorizontal: 10}}>
+                  {item.item[0].productName}
+                </Text>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  paddingVertical: 10,
+                  paddingHorizontal: 5,
+                  alignItems: 'center',
                 }}>
                 <Text
                   style={{
-                    fontSize: 14,
-                    textAlign: 'center',
                     paddingHorizontal: 10,
+                    fontSize: 14,
+                    fontWeight: 'bold',
                   }}>
-                  {data.length}
+                  ₱{item.item[0].price}
                 </Text>
               </View>
             </View>
-            <View
-              style={{
-                alignItems: 'center',
-                flexDirection: 'row',
-                marginTop: 10,
-              }}>
-              <Text
-                style={{fontSize: 14, marginBottom: 5}}
-                onLayout={onTextLayout}>
-                ₱{item.originalPrice}
-              </Text>
-              <View
-                style={{
-                  position: 'absolute',
-                  top: '50%', // Position the line in the middle of the container
-                  width: textWidth,
-                  height: 1,
-                  backgroundColor: 'black',
-                }}
-              />
-              <Text
-                style={{
-                  marginLeft: 10,
-                  fontWeight: 'bold',
-                  fontSize: 18,
-                  marginBottom: 5,
-                }}>
-                ₱{item.originalPrice}
-              </Text>
-            </View>
           </View>
-        </View>
-
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{fontSize: 14, marginBottom: 5}}>
-            Puhunan:₱{item.originalPrice}
-          </Text>
-          <Text style={{fontSize: 14, marginBottom: 5}}>
-            Ginansya:₱{item.originalPrice}
-          </Text>
         </View>
       </View>
     );
@@ -202,6 +222,6 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Debt;
 
 const styles = StyleSheet.create({});

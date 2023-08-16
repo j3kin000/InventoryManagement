@@ -72,6 +72,11 @@ const SplashScreen: FC<SplashScreenProps> = ({navigation}) => {
           <CustomButton
             handleOnPress={() => navigateToLockScreen('choose')}
             text="Get Started"
+            textStyle={{
+              textShadowColor: 'rgba(0, 0, 0, 0.5)', // Color of the drop shadow
+              textShadowOffset: {width: 2, height: 2}, // Offset of the drop shadow
+              textShadowRadius: 5, // Radius of the drop shadow}}
+            }}
           />
         </View>
       )}
