@@ -64,12 +64,12 @@ const Navigation: FC = () => {
               screenOptions={{
                 headerShown: false,
               }}>
-              {/* <Stack.Screen name="SplashScreen" component={SplashScreen} />
+              <Stack.Screen name="SplashScreen" component={SplashScreen} />
               <Stack.Screen
                 name="LockScreen"
                 component={LockScreen}
                 initialParams={{pinStatus: 'choose'}}
-              /> */}
+              />
               <Stack.Screen name="HomeScreen" component={Home} />
               <Stack.Screen
                 name="InventoryScreen"

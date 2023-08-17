@@ -37,5 +37,3 @@ const CustomBackButton: FC<CustomBackButtonProps> = ({navigation}) => {
 };
 
 export default CustomBackButton;
-
-const styles = StyleSheet.create({});

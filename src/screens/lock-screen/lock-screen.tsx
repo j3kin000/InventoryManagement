@@ -67,12 +67,7 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
         stylePinCodeDeleteButtonColorHideUnderlay={mainColors.dark}
         stylePinCodeDeleteButtonColorShowUnderlay={mainColors.dark}
         customBackSpaceIcon={() => (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={globalStyles.centerContainer}>
             <MaterialIcons
               name="backspace"
               color={mainColors.secondary}

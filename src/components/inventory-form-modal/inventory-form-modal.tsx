@@ -7,15 +7,15 @@ import {mainColors} from '../../utils/styles/styles.utils';
 import {Formik} from 'formik';
 import {InventoryFormSchema} from '../../utils/schema/schema.utils';
 
-export type InventoryFormSchema = {
+export type InventoryFormProps = {
   title: string;
   uid: string;
 };
 export type InventoryFormModalProps = {
   isOpenModal: boolean;
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-  onSubmitHandler: (values: InventoryFormSchema) => void;
-  initialValues?: InventoryFormSchema;
+  onSubmitHandler: (values: InventoryFormProps) => void;
+  initialValues?: InventoryFormProps;
 };
 
 const InventoryFormModal: FC<InventoryFormModalProps> = ({
@@ -33,7 +33,11 @@ const InventoryFormModal: FC<InventoryFormModalProps> = ({
   };
 
   return (
-    <Modal visible={isOpenModal} transparent={true}>
+    <Modal
+      visible={isOpenModal}
+      transparent={true}
+      animationType="fade"
+      onRequestClose={onCancelHandler}>
       <View
         style={{
           flex: 1,
@@ -45,8 +49,6 @@ const InventoryFormModal: FC<InventoryFormModalProps> = ({
         <View
           style={{
             flex: 1,
-
-            // bottom: 40,
             justifyContent: 'center',
           }}>
           <View

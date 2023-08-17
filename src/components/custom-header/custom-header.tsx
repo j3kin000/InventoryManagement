@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {mainColors} from '../../utils/styles/styles.utils';
 import Fontisto from 'react-native-vector-icons/Fontisto';
+import {styles} from './styles.custom-header';
 
 const CustomHeader = () => {
   return (
@@ -17,110 +18,28 @@ const CustomHeader = () => {
         start={{x: 0, y: 0}}
         end={{x: 0, y: 1}}
         style={{borderBottomEndRadius: 3, borderBottomStartRadius: 3}}>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-
-            ...Platform.select({
-              ios: {
-                paddingTop: 70,
-                paddingBottom: 75,
-              },
-              android: {
-                paddingTop: 50,
-                paddingBottom: 75,
-              },
-            }),
-          }}>
+        <View style={styles.titleContainer}>
           <View style={{alignItems: 'center'}}>
             <Fontisto name="export" size={24} color="white" />
-            <Text
-              style={{
-                color: '#c2c2c2',
-                fontSize: 10,
-                letterSpacing: 1,
-              }}>
-              Export data
-            </Text>
+            <Text style={styles.text}>Export data</Text>
           </View>
-          <Text
-            style={{
-              color: mainColors.primary,
-              fontWeight: '800',
-              fontSize: 18,
-              letterSpacing: 1,
-            }}>
-            Inventory
-          </Text>
+          <Text style={styles.titleText}>Inventory</Text>
           <View style={{alignItems: 'center'}}>
             <Fontisto name="import" size={24} color="white" />
-            <Text
-              style={{
-                color: '#c2c2c2',
-                fontSize: 10,
-                letterSpacing: 1,
-              }}>
-              Import
-            </Text>
+            <Text style={styles.text}>Import</Text>
           </View>
         </View>
       </LinearGradient>
-      <View
-        style={{
-          // Common styles
-          position: 'absolute',
-          backgroundColor: mainColors.primary,
-          alignSelf: 'center',
-          width: '95%',
-          justifyContent: 'center',
-          borderRadius: 20,
-          elevation: 5,
-          minHeight: 100,
-          ...Platform.select({
-            ios: {
-              top: 120,
-            },
-            android: {
-              top: 100,
-            },
-          }),
-        }}>
-        <View
-          style={{
-            justifyContent: 'space-between',
-            flexDirection: 'row',
-            paddingVertical: 20,
-            paddingHorizontal: 40,
-            alignItems: 'center',
-          }}>
+      <View style={styles.infoContainer}>
+        <View style={styles.infoTitleContainer}>
           <View>
-            <Text
-              style={{
-                color: 'black',
-                fontWeight: 'bold',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              412.311
-            </Text>
-            <Text style={{color: '#C2C2C2', fontSize: 12, textAlign: 'center'}}>
-              expenditure
-            </Text>
+            <Text style={styles.infoTextTitle}>412.311</Text>
+            <Text style={styles.infoText}>expenditure</Text>
           </View>
 
           <View>
-            <Text
-              style={{
-                color: 'black',
-                fontWeight: 'bold',
-                fontSize: 18,
-                textAlign: 'center',
-              }}>
-              $ 412311
-            </Text>
-            <Text style={{color: '#C2C2C2', fontSize: 12}}>Financial gain</Text>
+            <Text style={styles.infoTextTitle}>$ 412311</Text>
+            <Text style={styles.infoText}>Financial gain</Text>
           </View>
         </View>
       </View>
@@ -129,5 +48,3 @@ const CustomHeader = () => {
 };
 
 export default CustomHeader;
-
-const styles = StyleSheet.create({});

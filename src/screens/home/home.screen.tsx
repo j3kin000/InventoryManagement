@@ -1,11 +1,5 @@
 import {
-  ActivityIndicator,
-  Dimensions,
-  FlatList,
   ListRenderItemInfo,
-  Modal,
-  Platform,
-  StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -20,17 +14,14 @@ import {RowMap, SwipeListView} from 'react-native-swipe-list-view';
 import Feather from 'react-native-vector-icons/Feather';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../navigation/root.navigation';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import uuid from 'react-native-uuid';
-import FAB from 'react-native-fab';
 import InventoryFormModal, {
-  InventoryFormSchema,
+  InventoryFormProps,
 } from '../../components/inventory-form-modal/inventory-form-modal';
 import {InventoryProps} from '../../store/inventory/inventory.types';
 import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
 import {
   deleteInventoryAsync,
-  fetchInventoryAsync,
   postInventoryAsync,
   putInventoryAsync,
 } from '../../store/inventory/inventory.action';
@@ -41,7 +32,11 @@ import {
 } from '../../store/inventory/inventory.selector';
 import CustomLoadingIndicator from '../../components/custom-loading-indicator/custom-loading-indicator';
 import {styles} from './styles.home';
-import {getDate, getHourlyDuration, windowHeight} from '../../utils/utils';
+import {getDate, getHourlyDuration} from '../../utils/utils';
+import VerticalLine from '../../components/vertical-line/vertical-line';
+import CustomListHeader from '../../components/custom-list-header/custom-list-header';
+import CustomListEmpty from '../../components/custom-list-empty/custom-list-empty';
+import CustomFab from '../../components/custom-fab/custom-fab';
 
 export type HomeProps = {
   navigation: StackNavigationProp<RootStackParamList, 'HomeScreen'>;
@@ -52,9 +47,8 @@ const Home: FC<HomeProps> = ({navigation}) => {
   const inventoryIsLoading = useSelector(selectInventoryIsLoading);
   const inventoryError = useSelector(selectInventoryError);
   const [isOpenModal, setIsOpenModal] = useState(false);
-
   const [formType, setFormType] = useState('POST');
-  const [initialValues, setInitialValues] = useState<InventoryFormSchema>({
+  const [initialValues, setInitialValues] = useState<InventoryFormProps>({
     title: '',
     uid: '',
   });
@@ -183,46 +177,9 @@ const Home: FC<HomeProps> = ({navigation}) => {
     </View>
   );
 
-  const ListHeaderComponent = () => {
-    return (
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingHorizontal: 20,
-          marginBottom: 20,
-          backgroundColor: mainColors.primary,
-        }}>
-        <Text>Ascending</Text>
-        <View
-          style={{
-            flexDirection: 'row',
-          }}>
-          <Text style={{paddingHorizontal: 10}}>Sort by</Text>
-          <Octicons name="sort-asc" size={24} />
-        </View>
-      </View>
-    );
-  };
-
-  const ListEmptyComponent = () => (
-    <View
-      style={{
-        height: windowHeight / 2,
-        flex: 1, // This makes the container take up the entire available space
-        justifyContent: 'center', // Center vertically
-        alignItems: 'center', // Center horizontally
-      }}>
-      <View style={{justifyContent: 'center', alignItems: 'center'}}>
-        <Octicons size={48} name="checklist" color={mainColors.secondary} />
-        <Text style={{fontWeight: 'bold', fontSize: 18, paddingTop: 20}}>
-          Oops it’s empty here
-        </Text>
-        <Text style={{fontSize: 14}}>No Inventory have been created yet</Text>
-      </View>
-    </View>
-  );
   const setPostInventory = async () => {
+    setInitialValues({...initialValues, title: '', uid: ''});
+
     setFormType('POST');
     setIsOpenModal(true);
   };
@@ -230,23 +187,17 @@ const Home: FC<HomeProps> = ({navigation}) => {
     data: {title: string; uid: string},
     closeRow: () => void,
   ) => {
-    setInitialValues({...initialValues, title: data.title, uid: data.uid});
-    console.log('setInitial', initialValues);
     setFormType('PUT');
+    setInitialValues({...initialValues, title: data.title, uid: data.uid});
+
     setIsOpenModal(true);
     closeRow();
-  };
-
-  const fetchInventory = async () => {
-    console.log('FETCHING');
-    await dispatch(fetchInventoryAsync());
   };
 
   const deleteInventory = async (uid: string) => {
     await dispatch(deleteInventoryAsync(uid));
   };
-  const onSubmitForm = async (values: InventoryFormSchema) => {
-    console.log('asdas', values);
+  const onSubmitForm = async (values: InventoryFormProps) => {
     const uid = uuid.v4();
     const data = {
       uid: formType === 'POST' ? uid.toString() : values.uid,
@@ -266,38 +217,19 @@ const Home: FC<HomeProps> = ({navigation}) => {
   return (
     <View style={globalStyles.container}>
       <CustomHeader />
-      <View
-        style={{
-          ...Platform.select({
-            ios: {
-              height: 80,
-            },
-            android: {
-              height: 70,
-            },
-          }),
-        }}
-      />
-
+      <VerticalLine />
       <SwipeListView
         data={inventory}
         renderItem={renderItem}
         renderHiddenItem={hiddenItem}
         rightOpenValue={-150}
-        ListHeaderComponent={ListHeaderComponent}
-        ListEmptyComponent={ListEmptyComponent}
+        ListHeaderComponent={CustomListHeader}
+        ListEmptyComponent={CustomListEmpty}
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}
         keyExtractor={(item: InventoryProps) => item.uid}
       />
-      <FAB
-        buttonColor={mainColors.secondary}
-        iconTextColor={mainColors.primary}
-        onClickAction={setPostInventory}
-        visible={true}
-        iconTextComponent={<AntDesign name="plus" />}
-      />
-
+      <CustomFab onFabHandler={setPostInventory} />
       <InventoryFormModal
         initialValues={initialValues}
         isOpenModal={isOpenModal}

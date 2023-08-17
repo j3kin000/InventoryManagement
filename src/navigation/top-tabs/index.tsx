@@ -1,4 +1,7 @@
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {
+  MaterialTopTabBarProps,
+  createMaterialTopTabNavigator,
+} from '@react-navigation/material-top-tabs';
 import Inventory from '../../screens/inventory/inventory.screen';
 import Product from '../../screens/product/product.screen';
 import Debt from '../../screens/debt/debt.screen';
@@ -21,7 +24,11 @@ export const InventoryTopTabNavigator: FC<InventoryTopTabNavigatorProps> = ({
   initialData,
 }) => {
   return (
-    <Tab.Navigator initialRouteName="Info">
+    <Tab.Navigator
+      initialRouteName="Info"
+      screenOptions={{
+        swipeEnabled: false,
+      }}>
       <Tab.Screen
         name="Info"
         component={Info}

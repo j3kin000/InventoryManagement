@@ -1,50 +1,40 @@
+import {ProductProps} from '../store/product/product.types';
 import DatabaseManager from './database';
 
-const tableName = 'Inventory';
+const tableName = 'Product';
 
-const sqlQuery = `CREATE TABLE IF NOT EXISTS Product (
+const sqlQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   uid TEXT NOT NULL UNIQUE,
   inventoryUid TEXT NOT NULL,
   image LONGTEXT,
   createdAt TEXT NOT NULL,
   productName TEXT NOT NULL,
-  stock INTEGER,
-  originalPrice INTEGER
-  salesPrice INTEGER
+  stock DOUBLE,
+  originalPrice DOUBLE,
+  salesPrice DOUBLE
 )`;
 
 const db = new DatabaseManager(sqlQuery);
 
-export type ProductProps = {
-  uid: string;
-  inventoryUid: string;
-  image: string;
-  createdAt: string;
-  productName: string;
-  stock: number;
-  originalPrice: number;
-  salesPrice: number;
-};
-
 export const POST_PRODUCT = async (data: ProductProps) => {
   try {
-    const sqlQuery = `INSERT INTO ${tableName} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const sqlQuery = `INSERT INTO ${tableName}(uid, inventoryUid, image, createdAt, productName, stock, originalPrice, salesPrice) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
     const parameters: string[] = [
       data.uid,
       data.inventoryUid,
       data.image,
-      new Date().toISOString(),
+      data.createdAt,
       data.productName,
       data.stock.toString(),
       data.originalPrice.toString(),
       data.salesPrice.toString(),
     ];
     const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
+    console.log('POST_PRODUCT', inventory);
     return inventory;
   } catch (error) {
-    return null;
+    throw error;
   }
 };
 
@@ -52,20 +42,27 @@ export type FetchProductProps = {
   uid: string;
   inventoryUid: string;
 };
-export const FETCH_PRODUCT = async (data: FetchProductProps) => {
+export const FETCH_PRODUCT = async (inventoryUid: string) => {
   try {
-    const sqlQuery = `SELECT * FROM ${tableName} WHERE uid = ? AND inventoryUid = ?`;
-    const parameters: string[] = [data.uid, data.inventoryUid];
-    const inventory = await db.execute(sqlQuery, parameters);
+    const sqlQuery = `SELECT * FROM ${tableName} WHERE inventoryUid = ?`;
+    const parameters: string[] = [inventoryUid];
+    const inventory: ProductProps[] = [];
+    const result = await db.execute(sqlQuery, parameters);
+    console.log('inventory', inventory);
+    for (const item of result) {
+      const {id, ...itemWithoutId} = item;
+      inventory.push(itemWithoutId);
+    }
     console.log('inventory', inventory);
     return inventory;
   } catch (error) {
-    return null;
+    throw error;
   }
 };
 
 export const PUT_PRODUCT = async (data: ProductProps) => {
   try {
+    console.log('PUT_PRODUCT', data);
     const sqlQuery = `UPDATE ${tableName} SET image = ?, createdAt = ?, productName = ?, stock = ? , originalPrice = ? , salesPrice = ?  WHERE uid = ? AND inventoryUid = ?`;
     const parameters: string[] = [
       data.image,
@@ -81,18 +78,19 @@ export const PUT_PRODUCT = async (data: ProductProps) => {
     console.log('inventory', inventory);
     return inventory;
   } catch (error) {
-    return null;
+    throw error;
   }
 };
 
-export const DELETE_PRODUCT = async (data: FetchProductProps) => {
+export const DELETE_PRODUCT = async (uid: string) => {
   try {
-    const sqlQuery = `DELETE FROM  ${tableName} WHERE uid = ? AND userUid = ?`;
-    const parameters: string[] = [data.uid, data.inventoryUid];
+    console.log('uid', uid);
+    const sqlQuery = `DELETE FROM  ${tableName} WHERE uid = ?`;
+    const parameters: string[] = [uid];
     const inventory = await db.execute(sqlQuery, parameters);
     console.log('inventory', inventory);
     return inventory;
   } catch (error) {
-    return null;
+    throw error;
   }
 };

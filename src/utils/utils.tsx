@@ -76,20 +76,18 @@ export const formatToMoney = (number: string) => {
 
 export const getDateDuration = (date: string) => {
   // Given date
-  const givenDate = new Date(date); // Replace with your given date
+  const givenDate = moment.tz(date, 'Asia/Manila');
 
   // Current date
-  const currentDate = new Date();
+  const currentDate = moment.tz(date, 'Asia/Manila');
 
-  // Calculate the time difference in milliseconds
-  const timeDifferenceMillis = currentDate.getTime() - givenDate.getTime();
+  // Calculate the duration
+  const duration = moment.duration(currentDate.diff(givenDate));
 
-  // Convert milliseconds to days
-  const daysDifference = Math.floor(
-    timeDifferenceMillis / (1000 * 60 * 60 * 24),
-  );
+  // Get the duration in days
+  const daysDifference = duration.asDays();
 
-  return `${daysDifference} days`;
+  return `${Math.floor(daysDifference)} days`;
 };
 
 export const getHourlyDuration = (date: string) => {
@@ -131,16 +129,8 @@ export const getHourlyDuration = (date: string) => {
   return `${days}d ${remainingHours}h ${remainingMinutes}m`;
 };
 
-// Example usage
-const duration = getHourlyDuration('2023-08-15T05:51:47.047Z');
-console.log(`Duration: ${duration}`);
-
 export const getDate = (date: string) => {
-  const currentDate = new Date(date);
+  const currentDate = moment.tz(date, 'Asia/Manila'); // Parse the given date in UTC timezone
 
-  const year = currentDate.getFullYear(); // 4-digit year
-  const month = currentDate.getMonth(); // 0-based month (0 - January, 11 - December)
-  const day = currentDate.getDate();
-
-  return `${month}-${day}-${year}`;
+  return currentDate.format('MMM Do YYYY'); // Aug 16th 23
 };

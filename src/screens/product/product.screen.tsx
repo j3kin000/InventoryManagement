@@ -1,31 +1,70 @@
-import {Image, LayoutChangeEvent, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  BackHandler,
+  Image,
+  LayoutChangeEvent,
+  ListRenderItemInfo,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {FC, useEffect, useState} from 'react';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
 import FAB from 'react-native-fab';
-import {SwipeListView} from 'react-native-swipe-list-view';
-import {ProductProps} from '../../database/product-table';
+import {RowMap, SwipeListView} from 'react-native-swipe-list-view';
+import uuid from 'react-native-uuid';
 
-const data = [
-  {
-    uid: '0',
-    inventoryUid: '1',
-    image: require('../../../assets/curve-line.png'), // Use require here
-    createdAt: '02/23/23:@3232',
-    productName: 'Rebisco',
-    stock: '121',
-    originalPrice: '12',
-    salesPrice: '15',
-  },
-];
-const Product = () => {
+import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
+import {
+  deleteProductAsync,
+  fetchProductAsync,
+  postProductAsync,
+  putProductAsync,
+} from '../../store/product/product.action';
+import {styles} from './styles';
+import ProductFormModal, {
+  ProductFormProps,
+} from '../../components/product-form-modal/product-form-modal';
+import {RouteProp} from '@react-navigation/native';
+import {TopTabParamList} from '../../navigation/top-tabs';
+import {useSelector} from 'react-redux';
+import {
+  selectProduct,
+  selectProductIsLoading,
+} from '../../store/product/product.selector';
+import CustomLoadingIndicator from '../../components/custom-loading-indicator/custom-loading-indicator';
+
+export type ProductProps = {
+  route: RouteProp<TopTabParamList, 'Product'>;
+};
+const Product: FC<ProductProps> = ({route}) => {
+  const inventory = route.params.data;
+  const product = useSelector(selectProduct);
+  const productIsLoading = useSelector(selectProductIsLoading);
+  console.log('productIsLoading', productIsLoading);
+  const dispatch = useAppDispatch();
+
+  const [isOpenModal, setIsOpenModal] = useState(false);
+
+  const [formType, setFormType] = useState('POST');
+  const [initialValues, setInitialValues] = useState<ProductFormProps>({
+    inventoryUid: '',
+    createdAt: '',
+    uid: '',
+    image: '',
+    productName: '',
+    stock: '',
+    originalPrice: '',
+    salesPrice: '',
+  });
   const [textWidth, setTextWidth] = useState(0);
 
   const onTextLayout = (event: LayoutChangeEvent) => {
     setTextWidth(event.nativeEvent.layout.width);
   };
-  const renderItem = ({item}: {item: ProductProps}) => {
+  const renderItem = ({item}: {item: ProductFormProps}) => {
     return (
       <View
         style={{
@@ -76,7 +115,7 @@ const Product = () => {
                     textAlign: 'center',
                     paddingHorizontal: 10,
                   }}>
-                  {data.length}
+                  {product.length}
                 </Text>
               </View>
             </View>
@@ -125,9 +164,25 @@ const Product = () => {
     );
   };
 
-  const hiddenItem = ({item}: {item: ProductProps}) => {
-    return <View></View>;
-  };
+  const hiddenItem = <T extends ProductFormProps>(
+    rowData: ListRenderItemInfo<T>,
+    rowMap: RowMap<T>,
+  ) => (
+    <View style={styles.rowBack}>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnLeft]}
+        onPress={() =>
+          setPutProduct(rowData.item, () => rowMap[rowData.item.uid].closeRow())
+        }>
+        <Text style={styles.backTextWhite}>Edit</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.backRightBtn, styles.backRightBtnRight]}
+        onPress={() => deleteProduct(rowData.item.uid)}>
+        <Text style={styles.backTextWhite}>Delete</Text>
+      </TouchableOpacity>
+    </View>
+  );
 
   const ListHeaderComponent = () => {
     return (
@@ -151,7 +206,7 @@ const Product = () => {
                 textAlign: 'center',
                 paddingHorizontal: 10,
               }}>
-              {data.length}
+              {product.length}
             </Text>
           </View>
         </View>
@@ -177,11 +232,61 @@ const Product = () => {
     );
   };
   const ListEmptyComponent = () => <View></View>;
+  const setPostProduct = async () => {
+    setInitialValues({
+      inventoryUid: '',
+      createdAt: '',
+      uid: '',
+      image: '',
+      productName: '',
+      stock: '',
+      originalPrice: '',
+      salesPrice: '',
+    });
+    setFormType('POST');
+    setIsOpenModal(true);
+  };
+  const setPutProduct = async (
+    data: ProductFormProps,
+    closeRow: () => void,
+  ) => {
+    setFormType('PUT');
+    setInitialValues({
+      ...initialValues,
+      uid: data.uid,
+      inventoryUid: data.inventoryUid,
+      image: data.image,
+      productName: data.productName,
+      stock: data.stock,
+      originalPrice: data.originalPrice,
+      salesPrice: data.salesPrice,
+    });
 
+    setIsOpenModal(true);
+    closeRow();
+  };
+  const deleteProduct = async (uid: string) => {
+    await dispatch(deleteProductAsync(uid));
+  };
+  const onSubmitForm = async (values: ProductFormProps) => {
+    const uid = uuid.v4();
+    const data = values;
+
+    if (formType === 'POST') {
+      data.inventoryUid = inventory.uid;
+      data.uid = uid.toString();
+      data.createdAt = new Date().toISOString();
+      await dispatch(postProductAsync(data));
+    } else if (formType === 'PUT') {
+      await dispatch(putProductAsync(data));
+    }
+
+    setIsOpenModal(false);
+  };
   return (
     <View style={{...globalStyles.container, padding: 10}}>
       <SwipeListView
-        data={data}
+        data={product}
         renderItem={renderItem}
         renderHiddenItem={hiddenItem}
         rightOpenValue={-150}
@@ -189,19 +294,26 @@ const Product = () => {
         ListEmptyComponent={ListEmptyComponent}
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}
-        keyExtractor={(item: ProductProps) => item.uid}
+        keyExtractor={(item: ProductFormProps) => item.uid}
       />
       <FAB
         buttonColor={mainColors.secondary}
         iconTextColor={mainColors.primary}
-        onClickAction={() => {}}
+        onClickAction={setPostProduct}
         visible={true}
         iconTextComponent={<AntDesign name="plus" />}
       />
+
+      <ProductFormModal
+        isOpenModal={isOpenModal}
+        setIsOpenModal={setIsOpenModal}
+        onSubmitHandler={onSubmitForm}
+        initialValues={initialValues}
+      />
+
+      <CustomLoadingIndicator isLoading={productIsLoading} />
     </View>
   );
 };
 
 export default Product;
-
-const styles = StyleSheet.create({});
