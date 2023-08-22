@@ -1,3 +1,4 @@
+import {DebtProps} from '../store/debt/debt.types';
 import DatabaseManager from './database';
 
 const tableName = 'Debt';
@@ -6,6 +7,7 @@ const sqlQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   inventoryUid INTEGER NOT NULL,
   uid TEXT NOT NULL UNIQUE,
+  name TEXT,
   items LONGTEXT NOT NULL,
   createdAt TEXT,
   isPaid BOOLEAN
@@ -13,72 +15,62 @@ const sqlQuery = `CREATE TABLE IF NOT EXISTS ${tableName} (
 
 const db = new DatabaseManager(sqlQuery);
 
-export type InventoryProps = {
-  uid: string;
-  title: string;
-  createdAt: string;
-  isActive: boolean;
-};
-
-export const POST_INVENTORY = async (data: InventoryProps) => {
+export const POST_DEBT = async (data: DebtProps) => {
   try {
-    const sqlQuery = `INSERT INTO ${tableName} VALUES (?, ?, ?, ?, ?, ?)`;
+    const sqlQuery = `INSERT INTO ${tableName}(inventoryUid, uid, name, items, createdAt, isPaid) VALUES (?, ?, ?, ?, ?, ?)`;
     const parameters: string[] = [
+      data.inventoryUid,
       data.uid,
-      data.userUid,
-      data.title,
-      new Date().toISOString(),
-      data.isActive.toString(),
+      data.name,
+      JSON.stringify(data.items),
+      data.createdAt,
+      data.isPaid.toString(),
     ];
-    const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
-    return inventory;
+    const debt = await db.execute(sqlQuery, parameters);
+    console.log('debt', debt);
+    return debt;
   } catch (error) {
     return null;
   }
 };
 
-export type FetchInventoryProps = {
-  uid: string;
-  userUid: string;
-};
-export const FETCH_INVENTORY = async (data: FetchInventoryProps) => {
+export const FETCH_DEBT = async (inventoryUid: string) => {
   try {
-    const sqlQuery = `SELECT * FROM ${tableName} WHERE uid = ? AND userUid = ?`;
-    const parameters: string[] = [data.uid, data.userUid];
-    const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
-    return inventory;
+    const sqlQuery = `SELECT * FROM ${tableName} WHERE inventoryUid = ?`;
+    const parameters: string[] = [inventoryUid];
+    const debt = await db.execute(sqlQuery, parameters);
+    console.log('inventory', debt);
+    return debt;
   } catch (error) {
     return null;
   }
 };
 
-export const PUT_INVENTORY = async (data: InventoryProps) => {
+export const PUT_DEBT = async (data: DebtProps) => {
   try {
-    const sqlQuery = `UPDATE ${tableName} SET title = ?, createdAt = ?, isActive = ? WHERE uid = ? AND userUid = ?`;
+    const sqlQuery = `UPDATE ${tableName} SET name = ?, items = ?,  createdAt = ?, isPaid = ? WHERE uid = ?`;
     const parameters: string[] = [
-      data.title,
-      new Date().toISOString(),
-      data.isActive.toString(),
+      data.name,
+      JSON.stringify(data.items),
+      data.createdAt,
+      data.isPaid.toString(),
       data.uid,
-      data.userUid,
     ];
-    const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
-    return inventory;
+    const debt = await db.execute(sqlQuery, parameters);
+    console.log('inventory', debt);
+    return debt;
   } catch (error) {
     return null;
   }
 };
 
-export const DELETE_INVENTORY = async (data: FetchInventoryProps) => {
+export const DELETE_DEBT = async (uid: string) => {
   try {
-    const sqlQuery = `DELETE FROM  ${tableName} WHERE uid = ? AND userUid = ?`;
-    const parameters: string[] = [data.uid, data.userUid];
-    const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
-    return inventory;
+    const sqlQuery = `DELETE FROM  ${tableName} WHERE uid = ?`;
+    const parameters: string[] = [uid];
+    const debt = await db.execute(sqlQuery, parameters);
+    console.log('DEBT', debt);
+    return debt;
   } catch (error) {
     return null;
   }

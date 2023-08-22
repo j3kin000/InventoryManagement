@@ -3,7 +3,7 @@ import React, {Dispatch, FC, SetStateAction, useEffect, useState} from 'react';
 import {windowHeight} from '../../utils/utils';
 import {TextInput} from 'react-native-gesture-handler';
 import CustomButton from '../custom-button/custom-button.component';
-import {mainColors} from '../../utils/styles/styles.utils';
+import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import {Formik} from 'formik';
 import {InventoryFormSchema} from '../../utils/schema/schema.utils';
 
@@ -70,90 +70,91 @@ const InventoryFormModal: FC<InventoryFormModalProps> = ({
                 backgroundColor: '#FFF',
                 width: '100%',
                 paddingTop: 20,
-                paddingHorizontal: 20,
+                // paddingHorizontal: 20,
                 borderRadius: 10,
                 // minHeight: height * 0.8,
                 maxHeight: windowHeight * 0.8,
               }}>
               <View
                 style={{
-                  height: 40,
-                  marginBottom: 10,
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  padding: 20,
+                  alignItems: 'center',
                 }}>
-                <Text
-                  style={{
-                    color: '#00A7D3',
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    letterSpacing: 2,
-                  }}>
-                  Add Inventory
-                </Text>
+                <Text style={globalStyles.title}>Inventory Form</Text>
               </View>
-              <Formik
-                initialValues={initialValues}
-                onSubmit={onSubmitHandler}
-                validationSchema={InventoryFormSchema}>
-                {({
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  values,
-                  errors,
-                  touched,
-                }) => (
-                  <>
-                    <View>
-                      <Text
+              <View style={{backgroundColor: '#F4F5FB', padding: 20}}>
+                <Formik
+                  initialValues={initialValues}
+                  onSubmit={onSubmitHandler}
+                  validationSchema={InventoryFormSchema}>
+                  {({
+                    handleChange,
+                    handleBlur,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                  }) => (
+                    <>
+                      <View>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            paddingBottom: 10,
+                            fontWeight: 'bold',
+                          }}>
+                          Title
+                        </Text>
+                        <TextInput
+                          style={{
+                            marginTop: 10,
+                            backgroundColor: '#E6E7ED',
+                            borderRadius: 10,
+                            fontSize: 14,
+                            paddingLeft: 10,
+                          }}
+                          placeholder="Enter your title..."
+                          onChangeText={handleChange('title')}
+                          onBlur={handleBlur('title')}
+                          value={values.title}
+                        />
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            color: 'red',
+                            marginBottom: 20,
+                          }}>
+                          {errors.title}
+                        </Text>
+                      </View>
+                      <View
                         style={{
-                          fontSize: 16,
-                          paddingBottom: 10,
-                          fontWeight: 'bold',
+                          justifyContent: 'flex-end',
+                          flexDirection: 'row',
+                          marginBottom: 20,
                         }}>
-                        Title
-                      </Text>
-                      <TextInput
-                        style={{
-                          backgroundColor: '#F3F3F3',
-                          borderRadius: 10,
-                          fontSize: 16,
-                          paddingLeft: 10,
-                        }}
-                        placeholder="Enter your title..."
-                        onChangeText={handleChange('title')}
-                        onBlur={handleBlur('title')}
-                        value={values.title}
-                      />
-                      <Text
-                        style={{fontSize: 16, color: 'red', marginBottom: 20}}>
-                        {errors.title}
-                      </Text>
-                    </View>
-                    <View
-                      style={{
-                        justifyContent: 'flex-end',
-                        flexDirection: 'row',
-                        marginBottom: 20,
-                      }}>
-                      <CustomButton
-                        handleOnPress={onCancelHandler}
-                        text="Cancel"
-                        buttonStyle={{
-                          backgroundColor: '#F3F3F3',
-                          padding: 10,
-                          marginHorizontal: 10,
-                        }}
-                        textStyle={{color: mainColors.dark}}
-                      />
-                      <CustomButton
-                        handleOnPress={handleSubmit}
-                        text="Submit"
-                        buttonStyle={{padding: 10}}
-                      />
-                    </View>
-                  </>
-                )}
-              </Formik>
+                        <CustomButton
+                          handleOnPress={onCancelHandler}
+                          text="Cancel"
+                          buttonStyle={{
+                            backgroundColor: '#E6E7ED',
+                            padding: 10,
+                            marginHorizontal: 10,
+                          }}
+                          textStyle={{color: mainColors.dark}}
+                        />
+                        <CustomButton
+                          handleOnPress={handleSubmit}
+                          text="Submit"
+                          buttonStyle={{padding: 10}}
+                        />
+                      </View>
+                    </>
+                  )}
+                </Formik>
+              </View>
             </View>
           </View>
         </View>

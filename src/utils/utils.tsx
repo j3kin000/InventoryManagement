@@ -1,6 +1,7 @@
 import {Dimensions, PixelRatio, ToastAndroid} from 'react-native';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import moment from 'moment-timezone';
+import {ProductProps} from '../store/product/product.types';
 
 const {fontScale, scale, width} = Dimensions.get('screen');
 
@@ -133,4 +134,37 @@ export const getDate = (date: string) => {
   const currentDate = moment.tz(date, 'Asia/Manila'); // Parse the given date in UTC timezone
 
   return currentDate.format('MMM Do YYYY'); // Aug 16th 23
+};
+
+export const calculateTotalInvestment = (
+  stock: string | ProductProps[],
+  price: string | undefined,
+) => {
+  if (!Array.isArray(stock) && price) {
+    const result = parseFloat(stock) * parseFloat(price);
+    return `₱${result}`;
+  }
+
+  if (Array.isArray(stock) && !price) {
+    const result = stock.reduce((sum, item) => {
+      return parseFloat(item.stock) * parseFloat(item.originalPrice) + sum;
+    }, 0);
+    return `₱${result}`;
+  }
+};
+export const calculateTotalProfit = (
+  stock: string | ProductProps[],
+  price: string | undefined,
+) => {
+  if (!Array.isArray(stock) && price) {
+    const result = parseFloat(stock) * parseFloat(price);
+    return `₱${result}`;
+  }
+
+  if (Array.isArray(stock) && !price) {
+    const result = stock.reduce((sum, item) => {
+      return parseFloat(item.stock) * parseFloat(item.salesPrice) + sum;
+    }, 0);
+    return `₱${result}`;
+  }
 };

@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -35,17 +35,30 @@ import {
   selectProductIsLoading,
 } from '../../store/product/product.selector';
 import CustomLoadingIndicator from '../../components/custom-loading-indicator/custom-loading-indicator';
+import {
+  ImageLibraryOptions,
+  ImagePickerResponse,
+  launchCamera,
+  launchImageLibrary,
+} from 'react-native-image-picker';
+import {FormikErrors} from 'formik';
+import {
+  calculateTotalInvestment,
+  calculateTotalProfit,
+} from '../../utils/utils';
+import CustomListHeader from '../../components/custom-list-header/custom-list-header';
+import CustomListEmpty from '../../components/custom-list-empty/custom-list-empty';
 
 export type ProductProps = {
   route: RouteProp<TopTabParamList, 'Product'>;
 };
+
 const Product: FC<ProductProps> = ({route}) => {
   const inventory = route.params.data;
   const product = useSelector(selectProduct);
   const productIsLoading = useSelector(selectProductIsLoading);
   console.log('productIsLoading', productIsLoading);
   const dispatch = useAppDispatch();
-
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const [formType, setFormType] = useState('POST');
@@ -84,7 +97,11 @@ const Product: FC<ProductProps> = ({route}) => {
           <View style={{marginRight: 20}}>
             <Image
               resizeMethod="resize"
-              source={{uri: 'https://via.placeholder.com/400x225'}}
+              source={{
+                uri: item.image
+                  ? item.image
+                  : 'https://via.placeholder.com/400x225',
+              }}
               style={{
                 resizeMode: 'cover',
                 width: 60,
@@ -115,7 +132,7 @@ const Product: FC<ProductProps> = ({route}) => {
                     textAlign: 'center',
                     paddingHorizontal: 10,
                   }}>
-                  {product.length}
+                  {item.stock}
                 </Text>
               </View>
             </View>
@@ -146,7 +163,7 @@ const Product: FC<ProductProps> = ({route}) => {
                   fontSize: 18,
                   marginBottom: 5,
                 }}>
-                ₱{item.originalPrice}
+                ₱{item.salesPrice}
               </Text>
             </View>
           </View>
@@ -154,10 +171,10 @@ const Product: FC<ProductProps> = ({route}) => {
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Text style={{fontSize: 14, marginBottom: 5}}>
-            Puhunan:₱{item.originalPrice}
+            Puhunan:{calculateTotalInvestment(item.stock, item.originalPrice)}
           </Text>
           <Text style={{fontSize: 14, marginBottom: 5}}>
-            Ginansya:₱{item.originalPrice}
+            Ginansya:{calculateTotalProfit(item.stock, item.salesPrice)}
           </Text>
         </View>
       </View>
@@ -184,54 +201,29 @@ const Product: FC<ProductProps> = ({route}) => {
     </View>
   );
 
-  const ListHeaderComponent = () => {
-    return (
-      <View>
-        <View
-          style={{
-            marginVertical: 20,
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>Product List</Text>
-          <View
-            style={{
-              backgroundColor: mainColors.grey,
-              borderRadius: 10,
-              marginHorizontal: 10,
-            }}>
-            <Text
-              style={{
-                fontSize: 14,
-                textAlign: 'center',
-                paddingHorizontal: 10,
-              }}>
-              {product.length}
-            </Text>
-          </View>
-        </View>
+  const onImageGalleryClick = useCallback(
+    (setFieldValue: (field: string, value: any) => void) => {
+      const options: ImageLibraryOptions = {
+        selectionLimit: 1,
+        mediaType: 'photo',
+        includeBase64: true,
+      };
+      launchImageLibrary(options, (res: ImagePickerResponse) => {
+        if (res.didCancel) {
+          console.log('USER CANCELLED');
+        } else if (res.errorCode) {
+          console.log('ERROR', res.errorMessage);
+        } else {
+          console.log('IMAGE', res.assets[0].type);
+          console.log('IMAGE', res.assets[0].uri);
+          const imageUri = res?.assets[0]?.uri;
+          setFieldValue('image', imageUri);
+        }
+      });
+    },
+    [],
+  );
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: 20,
-            marginBottom: 20,
-            backgroundColor: mainColors.primary,
-          }}>
-          <Text>Ascending</Text>
-          <View
-            style={{
-              flexDirection: 'row',
-            }}>
-            <Text style={{paddingHorizontal: 10}}>Sort by</Text>
-            <Octicons name="sort-asc" size={24} />
-          </View>
-        </View>
-      </View>
-    );
-  };
-  const ListEmptyComponent = () => <View></View>;
   const setPostProduct = async () => {
     setInitialValues({
       inventoryUid: '',
@@ -285,16 +277,42 @@ const Product: FC<ProductProps> = ({route}) => {
   };
   return (
     <View style={{...globalStyles.container, padding: 10}}>
+      <View
+        style={{
+          marginVertical: 20,
+          flexDirection: 'row',
+          alignItems: 'center',
+          backgroundColor: 'white',
+        }}>
+        <Text style={{fontSize: 18, fontWeight: 'bold'}}>Product List</Text>
+        <View
+          style={{
+            backgroundColor: mainColors.grey,
+            borderRadius: 10,
+            marginHorizontal: 10,
+          }}>
+          <Text
+            style={{
+              fontSize: 14,
+              textAlign: 'center',
+              paddingHorizontal: 10,
+            }}>
+            {product.length}
+          </Text>
+        </View>
+      </View>
       <SwipeListView
+        showsVerticalScrollIndicator={false}
         data={product}
         renderItem={renderItem}
         renderHiddenItem={hiddenItem}
         rightOpenValue={-150}
-        ListHeaderComponent={ListHeaderComponent}
-        ListEmptyComponent={ListEmptyComponent}
+        ListHeaderComponent={CustomListHeader}
+        ListEmptyComponent={CustomListEmpty}
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}
         keyExtractor={(item: ProductFormProps) => item.uid}
+        style={{marginBottom: 40}}
       />
       <FAB
         buttonColor={mainColors.secondary}
@@ -309,6 +327,7 @@ const Product: FC<ProductProps> = ({route}) => {
         setIsOpenModal={setIsOpenModal}
         onSubmitHandler={onSubmitForm}
         initialValues={initialValues}
+        onImageGalleryClick={onImageGalleryClick}
       />
 
       <CustomLoadingIndicator isLoading={productIsLoading} />

@@ -1,37 +1,40 @@
-export type debtProps = {
+export enum DEBT_ACTION_TYPES {
+  FETCH_DEBT_START = 'FETCH_DEBT_START',
+  FETCH_DEBT_SUCCESS = 'FETCH_DEBT_SUCCESS',
+  FETCH_DEBT_FAILED = 'FETCH_DEBT_FAILED',
+
+  POST_DEBT_START = 'POST_DEBT_START',
+  POST_DEBT_SUCCESS = 'POST_DEBT_SUCCESS',
+  POST_DEBT_FAILED = 'POST_DEBT_FAILED',
+
+  PUT_DEBT_START = 'PUT_DEBT_START',
+  PUT_DEBT_SUCCESS = 'PUT_DEBT_SUCCESS',
+  PUT_DEBT_FAILED = 'PUT_DEBT_FAILED',
+
+  DELETE_DEBT_START = 'DELETE_DEBT_START',
+  DELETE_DEBT_SUCCESS = 'DELETE_DEBT_SUCCESS',
+  DELETE_DEBT_FAILED = 'DELETE_DEBT_FAILED',
+}
+
+export type DebtProps = {
   uid: string;
-  inventoryUid: string;
   name: string;
+  inventoryUid: string;
   createdAt: string;
-  item: itemProps[];
+  items: itemProps[];
+  isPaid: boolean;
 };
 
 export type itemProps = {
+  uid: string;
   image: string;
   productName: string;
-  price: string;
-  itemNo: string;
+  salesPrice: string;
+  numberItems: string;
 };
-const data = [
-  {
-    uid: '0',
-    inventoryUid: '1',
-    name: 'Rodolfo',
-    item: [
-      {
-        productName: 'Rebisco',
-        price: '15',
-        itemNo: '12',
-      },
-      {
-        productName: 'Chocolate',
-        price: '19.1',
-        itemNo: '12',
-      },
-    ],
-    createdAt: '02/23/23:@3232',
-    stock: '121',
-    originalPrice: '12',
-    salesPrice: '15',
-  },
-];
+
+export type DebtState = {
+  isLoading: boolean;
+  error: Error | null;
+  debt: DebtProps[] | [];
+};

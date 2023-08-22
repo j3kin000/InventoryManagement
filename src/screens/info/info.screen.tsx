@@ -13,7 +13,9 @@ const Info: FC<InfoProps> = ({route}) => {
   const inventory = route.params.data;
   console.log('inve', inventory);
   return (
-    <ScrollView style={{...globalStyles.container, padding: 10}}>
+    <ScrollView
+      style={{...globalStyles.container, padding: 10}}
+      showsVerticalScrollIndicator={false}>
       {/* <View style={{alignItems: 'flex-start'}}>
         <Text style={{fontSize: 18, fontWeight: 'bold'}}>
           General Information

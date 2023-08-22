@@ -14,16 +14,18 @@ import {
   TextInputFocusEventData,
   NativeSyntheticEvent,
   BackHandler,
+  Image,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Dispatch, SetStateAction} from 'react';
-import {Formik} from 'formik';
+import {Formik, FormikErrors} from 'formik';
 import {
   InventoryFormSchema,
   ProductFormSchema,
 } from '../../utils/schema/schema.utils';
 import CustomButton from '../custom-button/custom-button.component';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
+import {windowHeight, windowWidth} from '../../utils/utils';
 
 export type ProductFormProps = {
   inventoryUid: string;
@@ -41,9 +43,13 @@ type ProductFormModalProps = {
   setIsOpenModal: Dispatch<SetStateAction<boolean>>;
   onSubmitHandler: (values: ProductFormProps) => void;
   initialValues?: ProductFormProps;
+  onImageGalleryClick: (
+    setFieldValue: (field: string, value: any) => void,
+  ) => void;
 };
 
 const ProductFormModal: FC<ProductFormModalProps> = ({
+  onImageGalleryClick = () => {},
   isOpenModal = false,
   setIsOpenModal = () => {},
   onSubmitHandler = () => {},
@@ -87,9 +93,11 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}>
         <ScrollView
+          showsVerticalScrollIndicator={false}
           ref={scrollViewRef}
           style={{
             flex: 1,
+            flexGrow: 1,
           }}>
           <View style={styles.container}>
             <View style={styles.header}>
@@ -114,47 +122,86 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                   values,
                   errors,
                   touched,
+                  setFieldValue,
                 }) => (
                   <>
                     <View style={styles.inputContainer}>
                       <Text style={globalStyles.title}>Image</Text>
-                      <TouchableOpacity
+                      <View
                         style={{
-                          marginTop: 10,
-                          alignItems: 'flex-start',
-                          justifyContent: 'center',
-                        }}
-                        onPress={() => {}}>
-                        <View
+                          flexDirection: 'row',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                        }}>
+                        <TouchableOpacity
                           style={{
-                            paddingVertical: 10,
-                            paddingHorizontal: 20,
-                            borderRadius: 10,
-                            backgroundColor: '#E6E7ED',
-                            alignItems: 'center',
+                            marginTop: 10,
+                            alignItems: 'flex-start',
                             justifyContent: 'center',
-                          }}>
-                          <AntDesign
-                            name="pluscircle"
-                            size={18}
-                            color={mainColors.dark}
-                          />
-                          <Text
-                            style={{...globalStyles.text, paddingVertical: 10}}>
-                            Upload {`\n`} Image
-                          </Text>
-                          {errors.image && (
+                          }}
+                          onPress={() => onImageGalleryClick(setFieldValue)}>
+                          <View
+                            style={{
+                              paddingVertical: 10,
+                              paddingHorizontal: 20,
+                              borderRadius: 10,
+                              backgroundColor: '#E6E7ED',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <AntDesign
+                              name="pluscircle"
+                              size={18}
+                              color={mainColors.dark}
+                            />
                             <Text
                               style={{
-                                fontSize: 16,
-                                color: 'red',
-                                marginBottom: 20,
+                                ...globalStyles.text,
+                                paddingVertical: 10,
                               }}>
-                              {errors.image}
+                              Upload {`\n`} Image
                             </Text>
-                          )}
-                        </View>
-                      </TouchableOpacity>
+                            {errors.image && (
+                              <Text
+                                style={{
+                                  fontSize: 16,
+                                  color: 'red',
+                                  marginBottom: 20,
+                                }}>
+                                {errors.image}
+                              </Text>
+                            )}
+                          </View>
+                        </TouchableOpacity>
+                        {values.image && (
+                          <>
+                            <View style={{alignItems: 'center'}}>
+                              <AntDesign
+                                name="arrowright"
+                                size={48}
+                                color={mainColors.dark}
+                              />
+                            </View>
+
+                            <View>
+                              <Image
+                                resizeMethod="resize"
+                                source={{
+                                  uri: values.image
+                                    ? values.image
+                                    : 'https://via.placeholder.com/400x225',
+                                }}
+                                style={{
+                                  resizeMode: 'cover',
+                                  width: windowWidth / 4,
+                                  height: windowHeight / 2 / 4,
+                                  borderRadius: 10,
+                                }}
+                              />
+                            </View>
+                          </>
+                        )}
+                      </View>
                     </View>
                     <View style={styles.inputContainer}>
                       <Text style={globalStyles.title}>Product Name</Text>
@@ -177,7 +224,6 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                             scrollToInput(findNodeHandle(event.target));
                           }
                         }}
-                        error={touched.productName && errors.productName}
                       />
                       {touched.productName && errors.productName && (
                         <Text
@@ -200,6 +246,7 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                           fontSize: 14,
                           paddingLeft: 10,
                         }}
+                        keyboardType="numeric"
                         placeholder="Enter your Stock..."
                         onChangeText={handleChange('stock')}
                         onBlur={handleBlur('stock')}
@@ -211,7 +258,6 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                             scrollToInput(findNodeHandle(event.target));
                           }
                         }}
-                        error={touched.stock && errors.stock}
                       />
                       {touched.stock && errors.stock && (
                         <Text
@@ -234,6 +280,7 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                           fontSize: 14,
                           paddingLeft: 10,
                         }}
+                        keyboardType="numeric"
                         placeholder="Enter your Original Price..."
                         onChangeText={handleChange('originalPrice')}
                         onBlur={handleBlur('originalPrice')}
@@ -245,7 +292,6 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                             scrollToInput(findNodeHandle(event.target));
                           }
                         }}
-                        error={touched.originalPrice && errors.originalPrice}
                       />
                       {touched.originalPrice && errors.originalPrice && (
                         <Text
@@ -268,6 +314,7 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                           fontSize: 14,
                           paddingLeft: 10,
                         }}
+                        keyboardType="numeric"
                         placeholder="Enter your Sales Price..."
                         onChangeText={handleChange('salesPrice')}
                         onBlur={handleBlur('salesPrice')}
@@ -279,7 +326,6 @@ const ProductFormModal: FC<ProductFormModalProps> = ({
                             scrollToInput(findNodeHandle(event.target));
                           }
                         }}
-                        error={touched.salesPrice && errors.salesPrice}
                       />
                       {touched.salesPrice && errors.salesPrice && (
                         <Text

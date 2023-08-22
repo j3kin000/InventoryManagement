@@ -28,6 +28,6 @@ export const globalStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
   text: {
-    fontSize: 14,
+    fontSize: 16,
   },
 });

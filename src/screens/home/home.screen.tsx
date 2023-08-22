@@ -228,6 +228,7 @@ const Home: FC<HomeProps> = ({navigation}) => {
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}
         keyExtractor={(item: InventoryProps) => item.uid}
+        style={{marginBottom: 40}}
       />
       <CustomFab onFabHandler={setPostInventory} />
       <InventoryFormModal

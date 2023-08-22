@@ -8,6 +8,7 @@ const CustomListHeader = () => {
     <View
       style={{
         ...globalStyles.rowContainer,
+        backgroundColor: 'white',
       }}>
       <Text>Ascending</Text>
       <View
