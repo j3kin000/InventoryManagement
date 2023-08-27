@@ -1,12 +1,39 @@
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useMemo} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {mainColors} from '../../utils/styles/styles.utils';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import {styles} from './styles.custom-header';
+import {useSelector} from 'react-redux';
+import {selectProduct} from '../../store/product/product.selector';
+import {selectDebt} from '../../store/debt/debt.selector';
+import {
+  calculateTotalInvestment,
+  calculateTotalProfit,
+  formatToMoney,
+} from '../../utils/utils';
+import {ProductProps} from '../../store/product/product.types';
 
 const CustomHeader = () => {
+  const products = useSelector(selectProduct);
+  const debts = useSelector(selectDebt);
+  const puhunan = useMemo(() => {
+    return products.reduce((total: number, product: ProductProps) => {
+      const result = parseFloat(
+        calculateTotalInvestment(product.stock, product.originalPrice),
+      );
+      return result + total;
+    }, 0);
+  }, [products]);
+  const ginansya = useMemo(() => {
+    return products.reduce((total: number, product: ProductProps) => {
+      const result = parseFloat(
+        calculateTotalProfit(product.stock, product.salesPrice),
+      );
+      return result + total;
+    }, 0);
+  }, [products]);
   return (
     <>
       <LinearGradient
@@ -33,12 +60,12 @@ const CustomHeader = () => {
       <View style={styles.infoContainer}>
         <View style={styles.infoTitleContainer}>
           <View>
-            <Text style={styles.infoTextTitle}>412.311</Text>
+            <Text style={styles.infoTextTitle}>₱{formatToMoney(puhunan)}</Text>
             <Text style={styles.infoText}>expenditure</Text>
           </View>
 
           <View>
-            <Text style={styles.infoTextTitle}>$ 412311</Text>
+            <Text style={styles.infoTextTitle}>₱{formatToMoney(ginansya)}</Text>
             <Text style={styles.infoText}>Financial gain</Text>
           </View>
         </View>

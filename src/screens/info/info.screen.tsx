@@ -1,17 +1,53 @@
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {FC} from 'react';
+import React, {FC, useMemo} from 'react';
 import {RouteProp} from '@react-navigation/native';
 import {TopTabParamList} from '../../navigation/top-tabs';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {formatToMoney, getDate, getDateDuration} from '../../utils/utils';
+import {
+  calculateTotalInvestment,
+  calculateTotalProfit,
+  formatToMoney,
+  getDate,
+  getDateDuration,
+} from '../../utils/utils';
 import CustomButton from '../../components/custom-button/custom-button.component';
+import {useSelector} from 'react-redux';
+import {selectProduct} from '../../store/product/product.selector';
+import {ProductProps} from '../../store/product/product.types';
+import {selectDebt} from '../../store/debt/debt.selector';
+import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
+import {putInventoryAsync} from '../../store/inventory/inventory.action';
 export type InfoProps = {
   route: RouteProp<TopTabParamList, 'Info'>;
 };
 const Info: FC<InfoProps> = ({route}) => {
+  const dispatch = useAppDispatch();
   const inventory = route.params.data;
-  console.log('inve', inventory);
+  const products = useSelector(selectProduct);
+  const debts = useSelector(selectDebt);
+  const puhunan = useMemo(() => {
+    return products.reduce((total: number, product: ProductProps) => {
+      const result = parseFloat(
+        calculateTotalInvestment(product.stock, product.originalPrice),
+      );
+      return result + total;
+    }, 0);
+  }, [products]);
+  const ginansya = useMemo(() => {
+    return products.reduce((total: number, product: ProductProps) => {
+      const result = parseFloat(
+        calculateTotalProfit(product.stock, product.salesPrice),
+      );
+      return result + total;
+    }, 0);
+  }, [products]);
+
+  const onSubmitIsActive = () => {
+    inventory.isActive = !inventory.isActive;
+    console.log('INVENROYY', inventory.isActive);
+    dispatch(putInventoryAsync(inventory));
+  };
   return (
     <ScrollView
       style={{...globalStyles.container, padding: 10}}
@@ -115,7 +151,7 @@ const Info: FC<InfoProps> = ({route}) => {
                 Puhunan
               </Text>
               <Text style={{color: mainColors.dark, fontSize: 14}}>
-                ${formatToMoney('202020')}
+                ₱{formatToMoney(puhunan)}
               </Text>
             </View>
             <View>
@@ -123,7 +159,7 @@ const Info: FC<InfoProps> = ({route}) => {
                 Ginansya
               </Text>
               <Text style={{color: mainColors.dark, fontSize: 14}}>
-                ${formatToMoney('202020')}
+                ₱{formatToMoney(ginansya)}
               </Text>
             </View>
           </View>
@@ -167,7 +203,7 @@ const Info: FC<InfoProps> = ({route}) => {
                   fontWeight: 'bold',
                   paddingVertical: 10,
                 }}>
-                20
+                {products.length}
               </Text>
             </View>
           </View>
@@ -191,16 +227,21 @@ const Info: FC<InfoProps> = ({route}) => {
                   fontWeight: 'bold',
                   paddingVertical: 10,
                 }}>
-                20
+                {debts.length}
               </Text>
             </View>
           </View>
         </View>
       </View>
 
-      <View style={{marginVertical: 20}}>
-        <CustomButton text="Closed Inventory" handleOnPress={() => {}} />
-      </View>
+      {inventory.isActive && (
+        <View style={{marginVertical: 20}}>
+          <CustomButton
+            text="Closed Inventory"
+            handleOnPress={onSubmitIsActive}
+          />
+        </View>
+      )}
     </ScrollView>
   );
 };

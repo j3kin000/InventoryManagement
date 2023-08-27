@@ -48,13 +48,14 @@ import {
 } from '../../utils/utils';
 import CustomListHeader from '../../components/custom-list-header/custom-list-header';
 import CustomListEmpty from '../../components/custom-list-empty/custom-list-empty';
+import {InventoryProps} from '../../store/inventory/inventory.types';
 
 export type ProductProps = {
   route: RouteProp<TopTabParamList, 'Product'>;
 };
 
 const Product: FC<ProductProps> = ({route}) => {
-  const inventory = route.params.data;
+  const inventory: InventoryProps = route.params.data;
   const product = useSelector(selectProduct);
   const productIsLoading = useSelector(selectProductIsLoading);
   console.log('productIsLoading', productIsLoading);
@@ -171,10 +172,10 @@ const Product: FC<ProductProps> = ({route}) => {
 
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <Text style={{fontSize: 14, marginBottom: 5}}>
-            Puhunan:{calculateTotalInvestment(item.stock, item.originalPrice)}
+            Puhunan:₱{calculateTotalInvestment(item.stock, item.originalPrice)}
           </Text>
           <Text style={{fontSize: 14, marginBottom: 5}}>
-            Ginansya:{calculateTotalProfit(item.stock, item.salesPrice)}
+            Ginansya:₱{calculateTotalProfit(item.stock, item.salesPrice)}
           </Text>
         </View>
       </View>
@@ -184,22 +185,29 @@ const Product: FC<ProductProps> = ({route}) => {
   const hiddenItem = <T extends ProductFormProps>(
     rowData: ListRenderItemInfo<T>,
     rowMap: RowMap<T>,
-  ) => (
-    <View style={styles.rowBack}>
-      <TouchableOpacity
-        style={[styles.backRightBtn, styles.backRightBtnLeft]}
-        onPress={() =>
-          setPutProduct(rowData.item, () => rowMap[rowData.item.uid].closeRow())
-        }>
-        <Text style={styles.backTextWhite}>Edit</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.backRightBtn, styles.backRightBtnRight]}
-        onPress={() => deleteProduct(rowData.item.uid)}>
-        <Text style={styles.backTextWhite}>Delete</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  ) => {
+    if (inventory.isActive) {
+      return (
+        <View style={styles.rowBack}>
+          <TouchableOpacity
+            style={[styles.backRightBtn, styles.backRightBtnLeft]}
+            onPress={() =>
+              setPutProduct(rowData.item, () =>
+                rowMap[rowData.item.uid].closeRow(),
+              )
+            }>
+            <Text style={styles.backTextWhite}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.backRightBtn, styles.backRightBtnRight]}
+            onPress={() => deleteProduct(rowData.item.uid)}>
+            <Text style={styles.backTextWhite}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+    return <View></View>;
+  };
 
   const onImageGalleryClick = useCallback(
     (setFieldValue: (field: string, value: any) => void) => {
@@ -214,10 +222,12 @@ const Product: FC<ProductProps> = ({route}) => {
         } else if (res.errorCode) {
           console.log('ERROR', res.errorMessage);
         } else {
-          console.log('IMAGE', res.assets[0].type);
-          console.log('IMAGE', res.assets[0].uri);
-          const imageUri = res?.assets[0]?.uri;
-          setFieldValue('image', imageUri);
+          if (res.assets) {
+            console.log('IMAGE', res?.assets[0]?.type);
+            console.log('IMAGE', res?.assets[0]?.uri);
+            const imageUri = res?.assets[0]?.uri;
+            setFieldValue('image', imageUri);
+          }
         }
       });
     },
@@ -306,7 +316,7 @@ const Product: FC<ProductProps> = ({route}) => {
         data={product}
         renderItem={renderItem}
         renderHiddenItem={hiddenItem}
-        rightOpenValue={-150}
+        rightOpenValue={inventory.isActive ? -150 : 0}
         ListHeaderComponent={CustomListHeader}
         ListEmptyComponent={CustomListEmpty}
         disableRightSwipe={true}
@@ -314,13 +324,16 @@ const Product: FC<ProductProps> = ({route}) => {
         keyExtractor={(item: ProductFormProps) => item.uid}
         style={{marginBottom: 40}}
       />
-      <FAB
-        buttonColor={mainColors.secondary}
-        iconTextColor={mainColors.primary}
-        onClickAction={setPostProduct}
-        visible={true}
-        iconTextComponent={<AntDesign name="plus" />}
-      />
+
+      {inventory.isActive && (
+        <FAB
+          buttonColor={mainColors.secondary}
+          iconTextColor={mainColors.primary}
+          onClickAction={setPostProduct}
+          visible={true}
+          iconTextComponent={<AntDesign name="plus" />}
+        />
+      )}
 
       <ProductFormModal
         isOpenModal={isOpenModal}

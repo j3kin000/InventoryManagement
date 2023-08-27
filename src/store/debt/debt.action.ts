@@ -23,7 +23,7 @@ export const postDebtAsync =
   (data: DebtProps) => async (dispatch: Dispatch) => {
     dispatch(createAction(DEBT_ACTION_TYPES.POST_DEBT_START));
     try {
-      const result = await PUT_DEBT(data);
+      const result = await POST_DEBT(data);
 
       if (result.rowsAffected) {
         dispatch(createAction(DEBT_ACTION_TYPES.POST_DEBT_SUCCESS, data));
@@ -46,16 +46,15 @@ export const putDebtAsync = (data: DebtProps) => async (dispatch: Dispatch) => {
   }
 };
 
-export const deleteInventoryAsync =
-  (uid: string) => async (dispatch: Dispatch) => {
-    dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_START));
-    try {
-      const result = await DELETE_DEBT(uid);
+export const deleteDebtAsync = (uid: string) => async (dispatch: Dispatch) => {
+  dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_START));
+  try {
+    const result = await DELETE_DEBT(uid);
 
-      if (result.rowsAffected) {
-        dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_SUCCESS, uid));
-      }
-    } catch (error) {
-      dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_FAILED, error));
+    if (result.rowsAffected) {
+      dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_SUCCESS, uid));
     }
-  };
+  } catch (error) {
+    dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_FAILED, error));
+  }
+};

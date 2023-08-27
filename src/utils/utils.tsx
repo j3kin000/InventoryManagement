@@ -142,15 +142,17 @@ export const calculateTotalInvestment = (
 ) => {
   if (!Array.isArray(stock) && price) {
     const result = parseFloat(stock) * parseFloat(price);
-    return `₱${result}`;
+    return `${result}`;
   }
 
   if (Array.isArray(stock) && !price) {
     const result = stock.reduce((sum, item) => {
       return parseFloat(item.stock) * parseFloat(item.originalPrice) + sum;
     }, 0);
-    return `₱${result}`;
+    return `${result}`;
   }
+
+  return '0';
 };
 export const calculateTotalProfit = (
   stock: string | ProductProps[],
@@ -158,13 +160,14 @@ export const calculateTotalProfit = (
 ) => {
   if (!Array.isArray(stock) && price) {
     const result = parseFloat(stock) * parseFloat(price);
-    return `₱${result}`;
+    return `${result}`;
   }
 
   if (Array.isArray(stock) && !price) {
     const result = stock.reduce((sum, item) => {
       return parseFloat(item.stock) * parseFloat(item.salesPrice) + sum;
     }, 0);
-    return `₱${result}`;
+    return `${result}`;
   }
+  return '0';
 };

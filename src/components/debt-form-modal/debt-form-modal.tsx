@@ -13,28 +13,29 @@ import {
   StyleSheet,
   TextInputFocusEventData,
   NativeSyntheticEvent,
-  BackHandler,
-  Image,
-  TouchableOpacityProps,
-  TargetedEvent,
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Dispatch, SetStateAction} from 'react';
-import {Formik, FormikErrors} from 'formik';
-import {
-  DebtFormSchema,
-  InventoryFormSchema,
-  ProductFormSchema,
-} from '../../utils/schema/schema.utils';
+import {Formik} from 'formik';
+import {DebtFormSchema} from '../../utils/schema/schema.utils';
 import CustomButton from '../custom-button/custom-button.component';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
-import {windowHeight, windowWidth} from '../../utils/utils';
 import {DebtProps, itemProps} from '../../store/debt/debt.types';
 import {GestureResponderEvent} from 'react-native';
-import {SelectList} from 'react-native-dropdown-select-list';
-import DropDownPicker from 'react-native-dropdown-picker';
-import CustomDropdownSelect from '../custom-dropdown-select/custom-dropdown-select';
-import Picker from 'react-native-picker-select-gian';
+import RNPickerSelect, {
+  PickerSelectProps,
+} from 'react-native-picker-select-gian';
+import {getProductList} from '../../utils/hooks/hooks';
+import {useSelector} from 'react-redux';
+import {selectProduct} from '../../store/product/product.selector';
+
+type ProductFormModalProps = {
+  isOpenModal: boolean;
+  items: ItemsProps[];
+  setIsOpenModal: Dispatch<SetStateAction<boolean>>;
+  onSubmitHandler: (values: DebtProps) => void;
+  initialValues?: DebtProps;
+};
 
 export const item: itemProps = {
   uid: '',
@@ -53,38 +54,27 @@ export const initValues: DebtProps = {
   isPaid: false,
 };
 
-const data = [
-  {key: '1asdas', value: 'Mobiles', disabled: true},
-  {key: '2', value: 'apple'},
-  {key: '3', value: 'Cameras'},
-  {key: '4', value: 'Computers', disabled: true},
-  {key: '5', value: 'Vegetables'},
-  {key: '6', value: 'Diary Products'},
-  {key: '7', value: 'Drinks'},
-  {key: '7', value: 'Drinks'},
-  {key: '7', value: 'Drinks'},
-  {key: '7', value: 'Drinks'},
-  {key: '7', value: 'Drinks'},
-];
-
-type ProductFormModalProps = {
-  isOpenModal: boolean;
-  setIsOpenModal: Dispatch<SetStateAction<boolean>>;
-  onSubmitHandler: (values: DebtProps) => void;
-  initialValues?: DebtProps;
-  onAddProductListHandler: (items: itemProps[]) => void;
-  onRemoveProductListHandler: (item: string, items: itemProps[]) => void;
+const placeholder = {
+  label: 'Select a product...',
+  value: null,
+  color: '#9EA0A4', // Placeholder text color
 };
-
+export type ItemsProps = {
+  uid: string;
+  label: string;
+  value: string;
+  image: string;
+  salesPrice: string;
+};
 const DebtFormModal: FC<ProductFormModalProps> = ({
+  items,
   isOpenModal = false,
   setIsOpenModal = () => {},
   onSubmitHandler = () => {},
   initialValues = initValues,
-  onAddProductListHandler = () => {},
-  onRemoveProductListHandler = () => {},
 }) => {
   const scrollViewRef = useRef<ScrollView | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     setIsOpenModal(isOpenModal);
@@ -108,34 +98,18 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
     items: itemProps[],
   ) => {
     const yPosition = event.nativeEvent.locationY;
-    console.log('Y-axis position:', yPosition);
     if (event && yPosition) {
       scrollToInput(findNodeHandle(yPosition));
     }
-    onAddProductListHandler(items);
   };
 
-  const onRemoveProductHandler = (
-    event: GestureResponderEvent,
-    item: string,
-    items: itemProps[],
-  ) => {
-    const yPosition = event.nativeEvent.locationY;
-    if (event && yPosition) {
-      scrollToInput(findNodeHandle(yPosition));
-    }
-    onRemoveProductListHandler(item, items);
+  const handlePickerOpen = () => {
+    setPickerOpen(true);
   };
-  const [items, setItems] = useState([
-    {label: 'Apple', value: 'apple'},
-    {label: 'Orange', value: 'orange'},
-    {label: 'Orange', value: 'orange'},
-    {label: 'Orange', value: 'orange'},
 
-    {label: 'Melon', value: 'melon'},
-    {label: 'Banana', value: 'banana', disabled: true, createdAt: 'a'},
-  ]);
-  const onSelectProduct = (value: string, handleChange: () => void) => {};
+  const handlePickerClose = () => {
+    setPickerOpen(false);
+  };
   return (
     <Modal
       animationType="fade"
@@ -175,7 +149,6 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                   values,
                   errors,
                   touched,
-                  setFieldValue,
                   setValues,
                 }) => (
                   <>
@@ -216,6 +189,8 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                       <Text style={globalStyles.title}> Product List</Text>
 
                       {values.items.map((item, index) => {
+                        const currentItem = errors.items?.[index] as itemProps; // Explicitly cast to itemProps type
+
                         return (
                           <View
                             key={index}
@@ -225,90 +200,104 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                               padding: 10,
                               marginTop: 10,
                             }}>
-                            <TouchableOpacity
-                              onPress={(event: GestureResponderEvent) => {
-                                const updatedItems = values.items.filter(
-                                  (_, i) => i !== parseInt(index),
-                                );
-                                console.log('updatedItems', updatedItems);
-                                setValues({...values, items: updatedItems});
-                              }}
-                              style={{
-                                alignItems: 'flex-end',
-                              }}>
-                              <AntDesign
-                                name="close"
-                                size={16}
-                                color={mainColors.dark}
-                              />
-                            </TouchableOpacity>
-                            <View style={{paddingTop: 10}}>
-                              <Text style={{fontSize: 16}}>Stock</Text>
-                              {/* <SelectList
-                                boxStyles={{
-                                  borderWidth: 0,
-                                  marginTop: 10,
-                                  backgroundColor: mainColors.grey,
-                                  borderRadius: 10,
-                                  paddingLeft: 10,
+                            {items.length !== 1 && (
+                              <TouchableOpacity
+                                onPress={(event: GestureResponderEvent) => {
+                                  const updatedItems = values.items.filter(
+                                    (_, i) => i !== index,
+                                  );
+                                  setValues({...values, items: updatedItems});
                                 }}
-                                dropdownStyles={{
-                                  borderWidth: 0,
-                                  marginTop: 10,
-                                  backgroundColor: mainColors.grey,
-                                  borderRadius: 10,
-                                  paddingLeft: 10,
-                                }}
-                                dropdownTextStyles={{...globalStyles.text}}
-                                inputStyles={{...globalStyles.text}}
-                                setSelected={val =>
-                                  handleChange(`items.${index}.productName`)(
-                                    val,
-                                  )
-                                }
-                                searchPlaceholder={
-                                  values.items[index].productName
-                                }
-                                data={data}
-                                save="value"
-                              /> */}
-                              {console.log(
-                                'values?.items[index]?.productName ',
-                                values?.items[index]?.productName,
-                              )}
-                              <Picker
-                                value={values?.items[index]?.productName || ''}
-                                onValueChange={val => {
-                                  console.log('VALUE', val);
-                                  if (val)
-                                    handleChange(`items.${index}.productName`)(
-                                      val,
-                                    );
-                                }}
-                                items={[
-                                  {label: 'Football', value: 'football'},
-                                  {label: 'Baseball', value: 'baseball'},
-                                  {label: 'Hockey', value: 'hockey'},
-                                ]}
-                              />
-                              {/* <CustomDropdownSelect
-                                index={index}
-                                handleChange={handleChange}
-                                defaultValue={values.items[index].productName}
-                              /> */}
-                              {touched.items?.[index]?.productName &&
-                                errors.items?.[index]?.productName && (
-                                  <Text
-                                    style={{
-                                      fontSize: 16,
-                                      color: 'red',
-                                      marginBottom: 20,
-                                    }}>
-                                    {errors.items?.[index]?.productName}
-                                  </Text>
-                                )}
+                                style={{
+                                  alignItems: 'flex-end',
+                                }}>
+                                <AntDesign
+                                  name="close"
+                                  size={16}
+                                  color={mainColors.dark}
+                                />
+                              </TouchableOpacity>
+                            )}
+                            <View>
                               <View style={styles.inputContainer}>
-                                <Text style={globalStyles.title}>Stock</Text>
+                                <Text style={{fontSize: 16, fontWeight: '600'}}>
+                                  Product
+                                </Text>
+                                {items.length !== 1 ? (
+                                  <RNPickerSelect
+                                    Icon={() => {
+                                      return (
+                                        <View
+                                          style={{
+                                            position: 'absolute',
+                                            right: 18,
+                                            top: 30,
+                                          }}>
+                                          <AntDesign
+                                            name="caretdown"
+                                            size={12}
+                                            color={mainColors.dark}
+                                          />
+                                        </View>
+                                      );
+                                    }}
+                                    placeholder={pickerOpen ? {} : placeholder}
+                                    fixAndroidTouchableBug={true}
+                                    style={pickerStyles}
+                                    useNativeAndroidPickerStyle={false}
+                                    onOpen={handlePickerOpen}
+                                    onClose={handlePickerClose}
+                                    value={
+                                      values?.items[index]?.productName || ''
+                                    }
+                                    onValueChange={val => {
+                                      if (val) {
+                                        handleChange(
+                                          `items.${index}.productName`,
+                                        )(val);
+
+                                        return;
+                                      }
+                                      handleChange(
+                                        `items.${index}.productName`,
+                                      )('');
+                                    }}
+                                    items={items}
+                                  />
+                                ) : (
+                                  <View
+                                    style={{
+                                      marginTop: 10,
+                                      backgroundColor: mainColors.grey,
+                                      borderRadius: 10,
+                                      paddingLeft: 10,
+                                      paddingVertical: 15,
+                                    }}>
+                                    <Text
+                                      style={{
+                                        fontSize: 14,
+                                        color: 'black',
+                                      }}>
+                                      {items[0].value}
+                                    </Text>
+                                  </View>
+                                )}
+                                {touched.items?.[index]?.productName &&
+                                  currentItem?.productName && (
+                                    <Text
+                                      style={{
+                                        fontSize: 16,
+                                        color: 'red',
+                                        marginBottom: 20,
+                                      }}>
+                                      {currentItem?.productName}
+                                    </Text>
+                                  )}
+                              </View>
+                              <View style={styles.inputContainer}>
+                                <Text style={{fontSize: 16, fontWeight: '600'}}>
+                                  Stock
+                                </Text>
                                 <TextInput
                                   style={{
                                     marginTop: 10,
@@ -337,14 +326,14 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                                   }}
                                 />
                                 {touched.items?.[index]?.numberItems &&
-                                  errors.items?.[index]?.numberItems && (
+                                  currentItem?.numberItems && (
                                     <Text
                                       style={{
                                         fontSize: 16,
                                         color: 'red',
                                         marginBottom: 20,
                                       }}>
-                                      {errors.items?.[index]?.numberItems}
+                                      {currentItem?.numberItems}
                                     </Text>
                                   )}
                               </View>
@@ -353,28 +342,31 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                         );
                       })}
                     </View>
-                    <View style={styles.inputContainer}>
-                      <TouchableOpacity
-                        onPress={(event: GestureResponderEvent) =>
-                          onAddProductHandler(event, values.items)
-                        }
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <AntDesign
-                          name="plus"
-                          size={24}
-                          color={mainColors.secondary}
-                        />
-                        <Text
-                          style={{
-                            ...globalStyles.title,
-                            fontWeight: 'normal',
-                            color: mainColors.secondary,
-                            marginHorizontal: 10,
-                          }}>
-                          Add Product
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                    {items.length !== 1 && (
+                      <View style={styles.inputContainer}>
+                        <TouchableOpacity
+                          onPress={(event: GestureResponderEvent) => {
+                            const updatedItems = [...values.items, item];
+                            setValues({...values, items: updatedItems});
+                          }}
+                          style={{flexDirection: 'row', alignItems: 'center'}}>
+                          <AntDesign
+                            name="plus"
+                            size={24}
+                            color={mainColors.secondary}
+                          />
+                          <Text
+                            style={{
+                              ...globalStyles.title,
+                              fontWeight: 'normal',
+                              color: mainColors.secondary,
+                              marginHorizontal: 10,
+                            }}>
+                            Add Product
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
                     <View style={styles.buttonContainer}>
                       <CustomButton
                         handleOnPress={handleSubmit}
@@ -416,4 +408,46 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingTop: 40,
   },
+});
+export const pickerStyles = StyleSheet.create({
+  inputIOS: {
+    color: '#000000',
+    marginTop: 10,
+    backgroundColor: mainColors.grey,
+    borderRadius: 10,
+    fontSize: 14,
+    paddingLeft: 10,
+  },
+
+  inputAndroid: {
+    color: '#000000',
+    marginTop: 10,
+    backgroundColor: mainColors.grey,
+    borderRadius: 10,
+    fontSize: 14,
+    paddingLeft: 10,
+  },
+  modalViewMiddle: {
+    // Style for the modal bottom container
+    backgroundColor: 'red',
+  },
+  modalViewTop: {
+    backgroundColor: 'red',
+  },
+  modalItemText: {
+    // Style for the text of each item in the modal
+    fontSize: 18,
+    color: 'red',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    textAlign: 'center',
+  },
+  // placeholder: {
+  //   // Style for the placeholder text in the modal
+  //   fontSize: 18,
+  //   paddingVertical: 15,
+  //   paddingHorizontal: 10,
+  //   textAlign: 'center',
+  //   color: '#9EA0A4',
+  // },
 });
