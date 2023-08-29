@@ -36,13 +36,28 @@ export const POST_DEBT = async (data: DebtProps) => {
 
 export const FETCH_DEBT = async (inventoryUid: string) => {
   try {
+    console.log('inventoy', inventoryUid);
     const sqlQuery = `SELECT * FROM ${tableName} WHERE inventoryUid = ?`;
     const parameters: string[] = [inventoryUid];
-    const debt = await db.execute(sqlQuery, parameters);
-    console.log('inventory', debt);
-    return debt;
+    const debt: DebtProps[] = [];
+    const result = await db.execute(sqlQuery, parameters);
+    for (let i = 0; i < result.rows.length; i++) {
+      let itemWithoutId = result.rows.item(0);
+      console.log('itemWithoutId', itemWithoutId);
+      console.log('itemWithoutId.items', itemWithoutId.items);
+      debt.push(itemWithoutId);
+    }
+    const newArray = debt.map(obj => {
+      let {id, ...newObj} = obj;
+      newObj.items = JSON.parse(newObj.items);
+      return newObj;
+    });
+
+    console.log('newArray', newArray);
+    return newArray;
   } catch (error) {
-    return null;
+    console.log('ERROR', error);
+    throw error;
   }
 };
 

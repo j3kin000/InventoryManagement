@@ -125,6 +125,7 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
           style={{
             flex: 1,
             flexGrow: 1,
+            backgroundColor: '#F4F5FB',
           }}>
           <View style={styles.container}>
             <View style={styles.header}>
@@ -198,6 +199,7 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                               backgroundColor: '#E6E7ED',
                               borderRadius: 10,
                               padding: 10,
+                              flex: 1,
                               marginTop: 10,
                             }}>
                             {items.length !== 1 && (
@@ -218,70 +220,52 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
                                 />
                               </TouchableOpacity>
                             )}
-                            <View>
+                            <View style={{flex: 1}}>
                               <View style={styles.inputContainer}>
                                 <Text style={{fontSize: 16, fontWeight: '600'}}>
                                   Product
                                 </Text>
-                                {items.length !== 1 ? (
-                                  <RNPickerSelect
-                                    Icon={() => {
-                                      return (
-                                        <View
-                                          style={{
-                                            position: 'absolute',
-                                            right: 18,
-                                            top: 30,
-                                          }}>
-                                          <AntDesign
-                                            name="caretdown"
-                                            size={12}
-                                            color={mainColors.dark}
-                                          />
-                                        </View>
-                                      );
-                                    }}
-                                    placeholder={pickerOpen ? {} : placeholder}
-                                    fixAndroidTouchableBug={true}
-                                    style={pickerStyles}
-                                    useNativeAndroidPickerStyle={false}
-                                    onOpen={handlePickerOpen}
-                                    onClose={handlePickerClose}
-                                    value={
-                                      values?.items[index]?.productName || ''
-                                    }
-                                    onValueChange={val => {
-                                      if (val) {
-                                        handleChange(
-                                          `items.${index}.productName`,
-                                        )(val);
-
-                                        return;
-                                      }
+                                <RNPickerSelect
+                                  Icon={() => {
+                                    return (
+                                      <View
+                                        style={{
+                                          position: 'absolute',
+                                          right: 18,
+                                          top: 30,
+                                        }}>
+                                        <AntDesign
+                                          name="caretdown"
+                                          size={12}
+                                          color={mainColors.dark}
+                                        />
+                                      </View>
+                                    );
+                                  }}
+                                  placeholder={pickerOpen ? {} : placeholder}
+                                  fixAndroidTouchableBug={true}
+                                  style={pickerStyles}
+                                  useNativeAndroidPickerStyle={false}
+                                  onOpen={handlePickerOpen}
+                                  onClose={handlePickerClose}
+                                  value={
+                                    values?.items[index]?.productName || ''
+                                  }
+                                  onValueChange={val => {
+                                    if (val) {
                                       handleChange(
                                         `items.${index}.productName`,
-                                      )('');
-                                    }}
-                                    items={items}
-                                  />
-                                ) : (
-                                  <View
-                                    style={{
-                                      marginTop: 10,
-                                      backgroundColor: mainColors.grey,
-                                      borderRadius: 10,
-                                      paddingLeft: 10,
-                                      paddingVertical: 15,
-                                    }}>
-                                    <Text
-                                      style={{
-                                        fontSize: 14,
-                                        color: 'black',
-                                      }}>
-                                      {items[0].value}
-                                    </Text>
-                                  </View>
-                                )}
+                                      )(val);
+
+                                      return;
+                                    }
+                                    handleChange(`items.${index}.productName`)(
+                                      '',
+                                    );
+                                  }}
+                                  items={items}
+                                />
+
                                 {touched.items?.[index]?.productName &&
                                   currentItem?.productName && (
                                     <Text
@@ -396,6 +380,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   formContainer: {
     flex: 1,

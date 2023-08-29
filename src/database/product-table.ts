@@ -48,14 +48,21 @@ export const FETCH_PRODUCT = async (inventoryUid: string) => {
     const parameters: string[] = [inventoryUid];
     const inventory: ProductProps[] = [];
     const result = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
-    for (const item of result) {
-      const {id, ...itemWithoutId} = item;
+    for (let i = 0; i < result.rows.length; i++) {
+      let itemWithoutId = result.rows.item(0);
+      console.log('itemWithoutId', itemWithoutId);
+      console.log('itemWithoutId.items', itemWithoutId.items);
       inventory.push(itemWithoutId);
     }
-    console.log('inventory', inventory);
-    return inventory;
+    const newArray = inventory.map(obj => {
+      let {id, ...newObj} = obj;
+      return newObj;
+    });
+
+    console.log('newArray', newArray);
+    return newArray;
   } catch (error) {
+    console.log('ERRORSss', error);
     throw error;
   }
 };

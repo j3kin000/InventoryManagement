@@ -75,7 +75,7 @@ class DatabaseManager {
               });
             })
             .then(() => {
-              this.closeDatabase();
+              // this.closeDatabase();
             })
             .catch(err => {
               console.log('ERROR execute 1 ', err);

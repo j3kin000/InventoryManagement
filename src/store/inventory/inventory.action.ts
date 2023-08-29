@@ -56,8 +56,6 @@ export const putInventoryAsync =
       if (result.rowsAffected) {
         console.log('result putInventoryAsync success');
 
-        // setTimeout(() => {
-
         dispatch(
           createAction(INVENTORY_ACTION_TYPES.PUT_INVENTORY_SUCCESS, data),
         );

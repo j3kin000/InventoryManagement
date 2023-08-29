@@ -18,10 +18,13 @@ import {ProductProps} from '../../store/product/product.types';
 import {selectDebt} from '../../store/debt/debt.selector';
 import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
 import {putInventoryAsync} from '../../store/inventory/inventory.action';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../../navigation/root.navigation';
 export type InfoProps = {
   route: RouteProp<TopTabParamList, 'Info'>;
+  navigation: StackNavigationProp<RootStackParamList, 'InventoryScreen'>;
 };
-const Info: FC<InfoProps> = ({route}) => {
+const Info: FC<InfoProps> = ({route, navigation}) => {
   const dispatch = useAppDispatch();
   const inventory = route.params.data;
   const products = useSelector(selectProduct);
@@ -42,11 +45,15 @@ const Info: FC<InfoProps> = ({route}) => {
       return result + total;
     }, 0);
   }, [products]);
+  const isActive = useMemo(() => {
+    return inventory.isActive;
+  }, [inventory]);
 
+  console.log('isActiveisActive', isActive);
   const onSubmitIsActive = () => {
-    inventory.isActive = !inventory.isActive;
-    console.log('INVENROYY', inventory.isActive);
-    dispatch(putInventoryAsync(inventory));
+    const updatedInventory = {...inventory, isActive: !inventory.isActive};
+    dispatch(putInventoryAsync(updatedInventory));
+    navigation.navigate('HomeScreen');
   };
   return (
     <ScrollView
@@ -77,9 +84,7 @@ const Info: FC<InfoProps> = ({route}) => {
         </View>
         <View style={{paddingHorizontal: 20}}>
           <Text style={{fontSize: 14, fontWeight: 'bold'}}>Status</Text>
-          <Text style={{fontSize: 14}}>
-            {inventory.isActive ? 'Active' : 'Inactive'}
-          </Text>
+          <Text style={{fontSize: 14}}>{isActive ? 'Active' : 'Inactive'}</Text>
         </View>
       </View>
 
@@ -234,7 +239,7 @@ const Info: FC<InfoProps> = ({route}) => {
         </View>
       </View>
 
-      {inventory.isActive && (
+      {isActive && (
         <View style={{marginVertical: 20}}>
           <CustomButton
             text="Closed Inventory"

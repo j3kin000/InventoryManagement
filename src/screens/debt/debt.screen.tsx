@@ -102,7 +102,7 @@ const Debt: FC<DebtFCProps> = ({route}) => {
     );
   };
   const renderItem = ({item}: {item: DebtProps}) => {
-    console.log('ITEMS', item.items);
+    console.log('ITEMS', item);
     const totalPrice = item.items.reduce(
       (totalPrice, data) =>
         parseFloat(data.salesPrice) * parseFloat(data.numberItems) + totalPrice,
@@ -146,7 +146,7 @@ const Debt: FC<DebtFCProps> = ({route}) => {
             <View>
               {isInventoryActive ? (
                 <CustomButton
-                  text={item.isPaid ? 'Unpaid' : 'Paid'}
+                  text={item.isPaid ? 'Paid' : 'Unpaid'}
                   handleOnPress={() => setPutPaidDebt(item)}
                   buttonStyle={{padding: 10}}
                 />
@@ -159,7 +159,7 @@ const Debt: FC<DebtFCProps> = ({route}) => {
                       fontWeight: 'bold',
                       fontSize: 16,
                     }}>
-                    {item.isPaid ? 'Unpaid' : 'paid'}
+                    {item.isPaid ? 'Paid' : 'Unpaid'}
                   </Text>
                 </View>
               )}
@@ -302,7 +302,7 @@ const Debt: FC<DebtFCProps> = ({route}) => {
         keyExtractor={(item: DebtProps) => item.uid}
         style={{marginBottom: 40}}
       />
-      {isInventoryActive && (
+      {products.length !== 0 && isInventoryActive && (
         <FAB
           buttonColor={mainColors.secondary}
           iconTextColor={mainColors.primary}
