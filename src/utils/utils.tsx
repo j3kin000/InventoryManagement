@@ -100,11 +100,7 @@ export const getHourlyDuration = (date: string) => {
 
   // Calculate the time difference in minutes
   const minutesDifference = currentDate.diff(givenDate, 'minutes');
-  console.log('givenDate', givenDate);
 
-  console.log('currentDate', currentDate);
-
-  console.log('minutesDifference', minutesDifference);
   // Check if the duration is less than an hour
   if (minutesDifference < 60) {
     return `${minutesDifference}m`;

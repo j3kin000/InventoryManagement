@@ -1,23 +1,34 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {Dispatch, FC, SetStateAction, useState} from 'react';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import Octicons from 'react-native-vector-icons/Octicons';
 
-const CustomListHeader = () => {
+export type CustomListHeaderProps = {
+  isAscending: boolean;
+  setAscending: Dispatch<SetStateAction<boolean>>;
+};
+const CustomListHeader: FC<CustomListHeaderProps> = ({
+  isAscending,
+  setAscending,
+}) => {
+  const onSortChangeHandler = () => {
+    setAscending(!isAscending);
+  };
   return (
     <View
       style={{
         ...globalStyles.rowContainer,
         backgroundColor: 'white',
       }}>
-      <Text>Ascending</Text>
-      <View
+      <Text>{isAscending ? 'Ascending' : 'Descending'} </Text>
+      <TouchableOpacity
+        onPress={onSortChangeHandler}
         style={{
           flexDirection: 'row',
         }}>
         <Text style={{paddingHorizontal: 10}}>Sort by</Text>
-        <Octicons name="sort-asc" size={24} />
-      </View>
+        <Octicons name={isAscending ? 'sort-asc' : 'sort-desc'} size={24} />
+      </TouchableOpacity>
     </View>
   );
 };

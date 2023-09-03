@@ -13,10 +13,8 @@ export const fetchDebtAsync =
     dispatch(createAction(DEBT_ACTION_TYPES.FETCH_DEBT_START));
     try {
       const result = await FETCH_DEBT(inventoryUid);
-      console.log('RESULT', result);
       dispatch(createAction(DEBT_ACTION_TYPES.FETCH_DEBT_SUCCESS, result));
     } catch (error) {
-      console.log('ERROR', error);
       dispatch(createAction(DEBT_ACTION_TYPES.FETCH_DEBT_FAILED, error));
     }
   };

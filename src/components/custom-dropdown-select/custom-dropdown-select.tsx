@@ -24,7 +24,6 @@ const CustomDropdownSelect: FC<CustomDropdownSelectProps> = ({
     {label: 'Banana', value: 'banana', disabled: true, createdAt: 'a'},
   ]);
   useEffect(() => {
-    console.log('cameras', defaultValue);
     setValue(defaultValue);
   }, [defaultValue]);
   const settingFieldValue = useMemo(
@@ -32,9 +31,7 @@ const CustomDropdownSelect: FC<CustomDropdownSelectProps> = ({
     [value, setValue],
   );
   const onSetValueChange = val => {
-    console.log('values', val);
     setValue(val);
-    console.log('values', value);
   };
   return (
     <>

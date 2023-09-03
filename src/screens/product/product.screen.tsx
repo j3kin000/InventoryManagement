@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useCallback, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect, useMemo, useState} from 'react';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Octicons from 'react-native-vector-icons/Octicons';
@@ -49,6 +49,7 @@ import {
 import CustomListHeader from '../../components/custom-list-header/custom-list-header';
 import CustomListEmpty from '../../components/custom-list-empty/custom-list-empty';
 import {InventoryProps} from '../../store/inventory/inventory.types';
+import {sortByDate} from '../../utils/hooks/hooks';
 
 export type ProductProps = {
   route: RouteProp<TopTabParamList, 'Product'>;
@@ -58,7 +59,6 @@ const Product: FC<ProductProps> = ({route}) => {
   const inventory: InventoryProps = route.params.data;
   const product = useSelector(selectProduct);
   const productIsLoading = useSelector(selectProductIsLoading);
-  console.log('productIsLoading', productIsLoading);
   const dispatch = useAppDispatch();
   const [isOpenModal, setIsOpenModal] = useState(false);
 
@@ -74,6 +74,12 @@ const Product: FC<ProductProps> = ({route}) => {
     salesPrice: '',
   });
   const [textWidth, setTextWidth] = useState(0);
+  const [isAscending, setAscending] = useState(true);
+
+  const productItems = useMemo(
+    () => sortByDate(product, isAscending),
+    [isAscending, product],
+  );
 
   const onTextLayout = (event: LayoutChangeEvent) => {
     setTextWidth(event.nativeEvent.layout.width);
@@ -218,13 +224,9 @@ const Product: FC<ProductProps> = ({route}) => {
       };
       launchImageLibrary(options, (res: ImagePickerResponse) => {
         if (res.didCancel) {
-          console.log('USER CANCELLED');
         } else if (res.errorCode) {
-          console.log('ERROR', res.errorMessage);
         } else {
           if (res.assets) {
-            console.log('IMAGE', res?.assets[0]?.type);
-            console.log('IMAGE', res?.assets[0]?.uri);
             const imageUri = res?.assets[0]?.uri;
             setFieldValue('image', imageUri);
           }
@@ -313,11 +315,16 @@ const Product: FC<ProductProps> = ({route}) => {
       </View>
       <SwipeListView
         showsVerticalScrollIndicator={false}
-        data={product}
+        data={productItems}
         renderItem={renderItem}
         renderHiddenItem={hiddenItem}
         rightOpenValue={inventory.isActive ? -150 : 0}
-        ListHeaderComponent={CustomListHeader}
+        ListHeaderComponent={() => (
+          <CustomListHeader
+            isAscending={isAscending}
+            setAscending={setAscending}
+          />
+        )}
         ListEmptyComponent={CustomListEmpty}
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}

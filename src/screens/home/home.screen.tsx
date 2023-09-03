@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-import React, {FC, useState} from 'react';
+import React, {FC, useMemo, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import CustomHeader from '../../components/custom-header/custom-header';
@@ -37,13 +37,14 @@ import VerticalLine from '../../components/vertical-line/vertical-line';
 import CustomListHeader from '../../components/custom-list-header/custom-list-header';
 import CustomListEmpty from '../../components/custom-list-empty/custom-list-empty';
 import CustomFab from '../../components/custom-fab/custom-fab';
+import {sortByDate} from '../../utils/hooks/hooks';
 
 export type HomeProps = {
   navigation: StackNavigationProp<RootStackParamList, 'HomeScreen'>;
 };
 const Home: FC<HomeProps> = ({navigation}) => {
   const dispatch = useAppDispatch();
-  const inventory = useSelector(selectInventory);
+  const inventory: InventoryProps[] = useSelector(selectInventory);
   const inventoryIsLoading = useSelector(selectInventoryIsLoading);
   const inventoryError = useSelector(selectInventoryError);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -52,7 +53,12 @@ const Home: FC<HomeProps> = ({navigation}) => {
     title: '',
     uid: '',
   });
+  const [isAscending, setAscending] = useState(true);
 
+  const inventoryItems = useMemo(
+    () => sortByDate(inventory, isAscending),
+    [isAscending, inventory],
+  );
   const renderItem = ({item}: {item: InventoryProps}) => {
     return (
       <View style={{}}>
@@ -219,11 +225,16 @@ const Home: FC<HomeProps> = ({navigation}) => {
       <CustomHeader />
       <VerticalLine />
       <SwipeListView
-        data={inventory}
+        data={inventoryItems}
         renderItem={renderItem}
         renderHiddenItem={hiddenItem}
         rightOpenValue={-150}
-        ListHeaderComponent={CustomListHeader}
+        ListHeaderComponent={() => (
+          <CustomListHeader
+            isAscending={isAscending}
+            setAscending={setAscending}
+          />
+        )}
         ListEmptyComponent={CustomListEmpty}
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}

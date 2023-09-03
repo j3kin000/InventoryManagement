@@ -35,9 +35,7 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
 
   const _finishProcess = async () => {
     const hasPin = await hasUserSetPinCode();
-    console.log('hasPin', hasPin);
     if (hasPin) {
-      console.log('hasPin success', hasPin);
       dispatch(postFirstTimeOpenAsync(true));
 
       navigation.replace('HomeScreen');
@@ -80,7 +78,6 @@ const LockScreen: FC<LockScreenProps> = ({navigation, route}) => {
         styleLockScreenButton={{backgroundColor: mainColors.secondary}}
         iconButtonDeleteDisabled={true}
         onClickButtonLockedPage={() => {
-          console.log('Quitting');
           BackHandler.exitApp();
         }}
       />

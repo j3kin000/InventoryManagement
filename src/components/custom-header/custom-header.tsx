@@ -1,5 +1,5 @@
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {mainColors} from '../../utils/styles/styles.utils';
@@ -14,26 +14,69 @@ import {
   formatToMoney,
 } from '../../utils/utils';
 import {ProductProps} from '../../store/product/product.types';
+import {selectInventory} from '../../store/inventory/inventory.selector';
+import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
+import {FETCH_PRODUCT} from '../../database/product-table';
+import {InventoryProps} from '../../store/inventory/inventory.types';
 
 const CustomHeader = () => {
+  const inventory = useSelector(selectInventory);
   const products = useSelector(selectProduct);
-  const debts = useSelector(selectDebt);
-  const puhunan = useMemo(() => {
-    return products.reduce((total: number, product: ProductProps) => {
-      const result = parseFloat(
-        calculateTotalInvestment(product.stock, product.originalPrice),
-      );
-      return result + total;
-    }, 0);
-  }, [products]);
-  const ginansya = useMemo(() => {
-    return products.reduce((total: number, product: ProductProps) => {
-      const result = parseFloat(
-        calculateTotalProfit(product.stock, product.salesPrice),
-      );
-      return result + total;
-    }, 0);
-  }, [products]);
+  const [puhunan, setPuhunan] = useState(0);
+  const [ginansya, setGinansya] = useState(0);
+
+  const fetchProductAsync = async (inventoryUid: string) => {
+    return await FETCH_PRODUCT(inventoryUid);
+  };
+
+  useEffect(() => {
+    const getAllProducts = async () => {
+      try {
+        let totalGinansya = 0;
+        let totalPuhunan = 0;
+        for (const item of inventory) {
+          const product: ProductProps[] = await fetchProductAsync(item.uid);
+          const resultGinansya = product.reduce(
+            (acc: number, product: ProductProps) => {
+              const res = parseFloat(
+                calculateTotalProfit(product.stock, product.salesPrice),
+              );
+
+              return acc + res;
+            },
+            0,
+          );
+          const resultPuhunan = product.reduce(
+            (acc: number, product: ProductProps) => {
+              const res = parseFloat(
+                calculateTotalInvestment(product.stock, product.originalPrice),
+              );
+
+              return acc + res;
+            },
+            0,
+          );
+          totalGinansya += resultGinansya;
+          totalPuhunan += resultPuhunan;
+        }
+        setGinansya(totalGinansya);
+        setPuhunan(totalPuhunan);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    getAllProducts();
+  }, [inventory, products]);
+
+  // const ginansya = useMemo(() => {
+  //   return products.reduce((total: number, product: ProductProps) => {
+  //     const result = parseFloat(
+  //       calculateTotalProfit(product.stock, product.salesPrice),
+  //     );
+  //     return result + total;
+  //   }, 0);
+  // }, [products]);
   return (
     <>
       <LinearGradient
@@ -46,15 +89,15 @@ const CustomHeader = () => {
         end={{x: 0, y: 1}}
         style={{borderBottomEndRadius: 3, borderBottomStartRadius: 3}}>
         <View style={styles.titleContainer}>
-          <View style={{alignItems: 'center'}}>
+          {/* <View style={{alignItems: 'center'}}>
             <Fontisto name="export" size={24} color="white" />
             <Text style={styles.text}>Export data</Text>
-          </View>
+          </View> */}
           <Text style={styles.titleText}>Inventory</Text>
-          <View style={{alignItems: 'center'}}>
+          {/* <View style={{alignItems: 'center'}}>
             <Fontisto name="import" size={24} color="white" />
             <Text style={styles.text}>Import</Text>
-          </View>
+          </View> */}
         </View>
       </LinearGradient>
       <View style={styles.infoContainer}>

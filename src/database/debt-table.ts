@@ -27,7 +27,6 @@ export const POST_DEBT = async (data: DebtProps) => {
       data.isPaid.toString(),
     ];
     const debt = await db.execute(sqlQuery, parameters);
-    console.log('debt', debt);
     return debt;
   } catch (error) {
     return null;
@@ -36,15 +35,12 @@ export const POST_DEBT = async (data: DebtProps) => {
 
 export const FETCH_DEBT = async (inventoryUid: string) => {
   try {
-    console.log('inventoy', inventoryUid);
     const sqlQuery = `SELECT * FROM ${tableName} WHERE inventoryUid = ?`;
     const parameters: string[] = [inventoryUid];
     const debt: DebtProps[] = [];
     const result = await db.execute(sqlQuery, parameters);
     for (let i = 0; i < result.rows.length; i++) {
       let itemWithoutId = result.rows.item(0);
-      console.log('itemWithoutId', itemWithoutId);
-      console.log('itemWithoutId.items', itemWithoutId.items);
       debt.push(itemWithoutId);
     }
     const newArray = debt.map(obj => {
@@ -53,10 +49,8 @@ export const FETCH_DEBT = async (inventoryUid: string) => {
       return newObj;
     });
 
-    console.log('newArray', newArray);
     return newArray;
   } catch (error) {
-    console.log('ERROR', error);
     throw error;
   }
 };
@@ -72,7 +66,6 @@ export const PUT_DEBT = async (data: DebtProps) => {
       data.uid,
     ];
     const debt = await db.execute(sqlQuery, parameters);
-    console.log('inventory', debt);
     return debt;
   } catch (error) {
     return null;
@@ -84,7 +77,6 @@ export const DELETE_DEBT = async (uid: string) => {
     const sqlQuery = `DELETE FROM  ${tableName} WHERE uid = ?`;
     const parameters: string[] = [uid];
     const debt = await db.execute(sqlQuery, parameters);
-    console.log('DEBT', debt);
     return debt;
   } catch (error) {
     return null;

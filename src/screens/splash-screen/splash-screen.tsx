@@ -17,7 +17,6 @@ const SplashScreen: FC<SplashScreenProps> = ({navigation}) => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const userIsFirstTimeOpen = useSelector(selectUserIsFirstTimeOpen);
   useEffect(() => {
-    console.log('userIsFirstTimeOpen', userIsFirstTimeOpen);
     if (userIsFirstTimeOpen) {
       timeoutRef.current = setTimeout(() => {
         navigateToLockScreen('enter');

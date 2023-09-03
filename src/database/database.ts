@@ -19,44 +19,36 @@ class DatabaseManager {
 
   private async init(): Promise<SQLiteDatabase> {
     return new Promise(resolve => {
-      console.log('Opening database ...');
       openDatabase({
         name: 'sales-inventory.db',
         location: 'default',
       })
         .then(DB => {
           this.db = DB;
-          console.log('Database OPEN');
           this.db
             .transaction(tx => {
               tx.executeSql(this.sqlQuery);
             })
-            .then(() => {
-              console.log('Table created successfully');
-            })
+            .then(() => {})
             .catch(error => {
-              console.log('Error init 1 ', error);
+              throw error;
             });
           resolve(this.db);
         })
         .catch(error => {
-          console.log('Error init 2 ', error);
+          throw error;
         });
     });
   }
   private async closeDatabase(): Promise<void> {
     if (this.db) {
-      console.log('Closing DB');
       this.db
         .close()
-        .then(status => {
-          console.log('Database CLOSED');
-        })
+        .then(status => {})
         .catch(error => {
-          console.log('Database CLOSED error', error);
+          throw error;
         });
     } else {
-      console.log('Database was not OPENED');
     }
   }
   public async execute(
@@ -70,7 +62,6 @@ class DatabaseManager {
           this.db
             .transaction(tx => {
               tx.executeSql(sqlQuery, parameters).then(([_, results]) => {
-                console.log('Successfully Added ', results);
                 resolve(results);
               });
             })
@@ -78,12 +69,10 @@ class DatabaseManager {
               // this.closeDatabase();
             })
             .catch(err => {
-              console.log('ERROR execute 1 ', err);
               reject(err);
             });
         })
         .catch(err => {
-          console.log('ERROR execute 2', err);
           reject(err);
         });
     });

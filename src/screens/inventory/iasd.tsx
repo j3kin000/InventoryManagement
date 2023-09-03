@@ -60,8 +60,6 @@ const data = [
   },
 ];
 const Inventory: FC<InventoryProps> = ({navigation, route}) => {
-  console.log('ROUTES', route.params.inventory);
-
   const renderItem = (data, rowItem) => {
     return (
       <View style={{}}>
@@ -285,9 +283,7 @@ const Inventory: FC<InventoryProps> = ({navigation, route}) => {
       <FAB
         buttonColor={mainColors.secondary}
         iconTextColor={mainColors.primary}
-        onClickAction={() => {
-          console.log('FAB pressed');
-        }}
+        onClickAction={() => {}}
         visible={true}
         iconTextComponent={<AntDesign name="plus" />}
       />

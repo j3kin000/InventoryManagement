@@ -15,7 +15,6 @@ export const POST_USER = async (data: UserProps) => {
     const sqlQuery = `INSERT INTO ${tableName} (uid, pin) VALUES (?, ?)`;
     const parameters: string[] = [data.uid, data.pin];
     const user = await db.execute(sqlQuery, parameters);
-    console.log('user', user);
     return user;
   } catch (error) {
     return null;
@@ -27,7 +26,6 @@ export const FETCH_USER = async (pin: string) => {
     const sqlQuery = `SELECT * FROM ${tableName} `;
     const parameters: string[] = [];
     const user = await db.execute(sqlQuery, parameters);
-    console.log('user', user.rows.item(0));
     return user.rows.item(0);
   } catch (error) {
     return null;
@@ -39,10 +37,8 @@ export const PUT_USER = async (data: UserProps) => {
     const sqlQuery = `UPDATE ${tableName} SET pin = ? WHERE uid = ? `;
     const parameters: string[] = [data.pin, data.uid];
     const user = await db.execute(sqlQuery, parameters);
-    console.log('user', user);
     return user;
   } catch (error) {
-    console.log('PUrT ERROR ', error);
     return null;
   }
 };
@@ -52,7 +48,6 @@ export const DELETE_USER = async () => {
     const sqlQuery = `DELETE  FROM ${tableName} `;
     const parameters: string[] = [];
     const user = await db.execute(sqlQuery, parameters);
-    console.log('user', user);
     return user;
   } catch (error) {
     return null;

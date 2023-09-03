@@ -4,7 +4,7 @@ import {mainColors} from '../../utils/styles/styles.utils';
 export const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingHorizontal: 10,
 
     ...Platform.select({

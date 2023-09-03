@@ -49,7 +49,6 @@ const Info: FC<InfoProps> = ({route, navigation}) => {
     return inventory.isActive;
   }, [inventory]);
 
-  console.log('isActiveisActive', isActive);
   const onSubmitIsActive = () => {
     const updatedInventory = {...inventory, isActive: !inventory.isActive};
     dispatch(putInventoryAsync(updatedInventory));

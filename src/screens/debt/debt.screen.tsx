@@ -33,7 +33,7 @@ import {
   postDebtAsync,
   putDebtAsync,
 } from '../../store/debt/debt.action';
-import {getProductList} from '../../utils/hooks/hooks';
+import {getProductList, sortByDate} from '../../utils/hooks/hooks';
 import {selectProduct} from '../../store/product/product.selector';
 import uuid from 'react-native-uuid';
 import {RouteProp} from '@react-navigation/native';
@@ -55,7 +55,12 @@ const Debt: FC<DebtFCProps> = ({route}) => {
   const [formType, setFormType] = useState('POST');
   const products = useSelector(selectProduct);
   const items: ItemsProps[] = getProductList(products);
+  const [isAscending, setAscending] = useState(true);
 
+  const debtItems = useMemo(
+    () => sortByDate(debt, isAscending),
+    [isAscending, debt],
+  );
   const ItemList = (item: itemProps, index: number) => {
     const perItemPrice =
       parseFloat(item.salesPrice) * parseFloat(item.numberItems);
@@ -102,7 +107,6 @@ const Debt: FC<DebtFCProps> = ({route}) => {
     );
   };
   const renderItem = ({item}: {item: DebtProps}) => {
-    console.log('ITEMS', item);
     const totalPrice = item.items.reduce(
       (totalPrice, data) =>
         parseFloat(data.salesPrice) * parseFloat(data.numberItems) + totalPrice,
@@ -243,19 +247,16 @@ const Debt: FC<DebtFCProps> = ({route}) => {
     dispatch(putDebtAsync(data));
   };
   const onSubmitForm = async (values: DebtProps) => {
-    console.log('VALUES', values);
     values.items.map((item, index) => {
       const product = items.filter(prod => prod.value === item.productName);
       values.items[index].salesPrice = product[0].salesPrice;
     });
     const data = values;
-    console.log('DARA', data);
     if (formType === 'POST') {
       const uid = uuid.v4();
       data.inventoryUid = inventory.uid;
       data.uid = uid.toString();
       data.createdAt = new Date().toISOString();
-      console.log('DATA', data);
       await dispatch(postDebtAsync(data));
     } else if (formType === 'PUT') {
       await dispatch(putDebtAsync(data));
@@ -292,10 +293,15 @@ const Debt: FC<DebtFCProps> = ({route}) => {
       </View>
       <SwipeListView
         showsVerticalScrollIndicator={false}
-        data={debt}
+        data={debtItems}
         renderItem={renderItem}
         rightOpenValue={-150}
-        ListHeaderComponent={CustomListHeader}
+        ListHeaderComponent={() => (
+          <CustomListHeader
+            isAscending={isAscending}
+            setAscending={setAscending}
+          />
+        )}
         ListEmptyComponent={CustomListEmpty}
         disableRightSwipe={true}
         stickyHeaderIndices={[0]}

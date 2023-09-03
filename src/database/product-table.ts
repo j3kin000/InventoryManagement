@@ -31,7 +31,6 @@ export const POST_PRODUCT = async (data: ProductProps) => {
       data.salesPrice.toString(),
     ];
     const inventory = await db.execute(sqlQuery, parameters);
-    console.log('POST_PRODUCT', inventory);
     return inventory;
   } catch (error) {
     throw error;
@@ -50,8 +49,6 @@ export const FETCH_PRODUCT = async (inventoryUid: string) => {
     const result = await db.execute(sqlQuery, parameters);
     for (let i = 0; i < result.rows.length; i++) {
       let itemWithoutId = result.rows.item(0);
-      console.log('itemWithoutId', itemWithoutId);
-      console.log('itemWithoutId.items', itemWithoutId.items);
       inventory.push(itemWithoutId);
     }
     const newArray = inventory.map(obj => {
@@ -59,17 +56,14 @@ export const FETCH_PRODUCT = async (inventoryUid: string) => {
       return newObj;
     });
 
-    console.log('newArray', newArray);
     return newArray;
   } catch (error) {
-    console.log('ERRORSss', error);
     throw error;
   }
 };
 
 export const PUT_PRODUCT = async (data: ProductProps) => {
   try {
-    console.log('PUT_PRODUCT', data);
     const sqlQuery = `UPDATE ${tableName} SET image = ?, createdAt = ?, productName = ?, stock = ? , originalPrice = ? , salesPrice = ?  WHERE uid = ? AND inventoryUid = ?`;
     const parameters: string[] = [
       data.image,
@@ -82,7 +76,6 @@ export const PUT_PRODUCT = async (data: ProductProps) => {
       data.inventoryUid,
     ];
     const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
     return inventory;
   } catch (error) {
     throw error;
@@ -91,11 +84,9 @@ export const PUT_PRODUCT = async (data: ProductProps) => {
 
 export const DELETE_PRODUCT = async (uid: string) => {
   try {
-    console.log('uid', uid);
     const sqlQuery = `DELETE FROM  ${tableName} WHERE uid = ?`;
     const parameters: string[] = [uid];
     const inventory = await db.execute(sqlQuery, parameters);
-    console.log('inventory', inventory);
     return inventory;
   } catch (error) {
     throw error;
