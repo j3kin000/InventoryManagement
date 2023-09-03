@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import React from 'react';
 import {windowHeight} from '../../utils/utils';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';

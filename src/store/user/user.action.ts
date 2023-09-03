@@ -7,7 +7,7 @@ export const postUserAsync =
   (data: UserProps) => async (dispatch: Dispatch) => {
     dispatch(createAction(USER_ACTION_TYPES.POST_USER_START));
     try {
-      const result = POST_USER(data);
+      await POST_USER(data);
       dispatch(createAction(USER_ACTION_TYPES.POST_USER_SUCCESS, data));
     } catch (error) {
       dispatch(createAction(USER_ACTION_TYPES.POST_USER_FAILED, error));
@@ -17,7 +17,7 @@ export const postUserAsync =
 export const fetchUserAsync = (data: string) => async (dispatch: Dispatch) => {
   dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_START));
   try {
-    const result = FETCH_USER(data);
+    await FETCH_USER(data);
     dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_SUCCESS, data));
   } catch (error) {
     dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_FAILED, error));
@@ -27,7 +27,7 @@ export const fetchUserAsync = (data: string) => async (dispatch: Dispatch) => {
 export const putUserAsync = (data: UserProps) => async (dispatch: Dispatch) => {
   dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_START));
   try {
-    const result = PUT_USER(data);
+    await PUT_USER(data);
     dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_SUCCESS, data));
   } catch (error) {
     dispatch(createAction(USER_ACTION_TYPES.FETCH_USER_FAILED, error));

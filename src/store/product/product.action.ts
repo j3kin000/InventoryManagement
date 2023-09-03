@@ -5,7 +5,6 @@ import {
   DELETE_ALL_PRODUCT,
   DELETE_PRODUCT,
   FETCH_PRODUCT,
-  FetchProductProps,
   POST_PRODUCT,
   PUT_PRODUCT,
 } from '../../database/product-table';

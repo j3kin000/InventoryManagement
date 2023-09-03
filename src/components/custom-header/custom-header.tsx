@@ -191,7 +191,7 @@ const CustomHeader = () => {
           qrData={qrData}
           onReadScan={onReadScan}
         />
-        <CustomLoadingIndicator isLoading={false} />
+        <CustomLoadingIndicator isLoading={isLoading} />
       </View>
     </>
   );

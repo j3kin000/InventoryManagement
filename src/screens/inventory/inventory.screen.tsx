@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {View} from 'react-native';
 import React, {FC, useEffect} from 'react';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RouteProp} from '@react-navigation/native';
@@ -20,7 +20,7 @@ const Inventory: FC<InventoryProps> = ({navigation, route}) => {
   useEffect(() => {
     dispatch(fetchDebtAsync(inventory.uid));
     dispatch(fetchProductAsync(inventory.uid));
-  }, []);
+  }, [inventory.uid]);
 
   return (
     <View style={globalStyles.container}>
@@ -31,5 +31,3 @@ const Inventory: FC<InventoryProps> = ({navigation, route}) => {
 };
 
 export default Inventory;
-
-const styles = StyleSheet.create({});

@@ -10,5 +10,3 @@ const CustomHiddenItem = () => {
 };
 
 export default CustomHiddenItem;
-
-const styles = StyleSheet.create({});

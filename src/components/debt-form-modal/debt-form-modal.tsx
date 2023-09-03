@@ -1,6 +1,5 @@
 import React, {FC, useEffect, useRef, useState} from 'react';
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -22,12 +21,6 @@ import CustomButton from '../custom-button/custom-button.component';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import {DebtProps, itemProps} from '../../store/debt/debt.types';
 import {GestureResponderEvent} from 'react-native';
-import RNPickerSelect, {
-  PickerSelectProps,
-} from 'react-native-picker-select-gian';
-import {getProductList} from '../../utils/hooks/hooks';
-import {useSelector} from 'react-redux';
-import {selectProduct} from '../../store/product/product.selector';
 
 type ProductFormModalProps = {
   isOpenModal: boolean;

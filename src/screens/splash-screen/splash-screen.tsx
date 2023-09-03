@@ -1,11 +1,10 @@
-import {Button, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {ImageBackground, Text, View} from 'react-native';
 import React, {FC, useEffect, useRef} from 'react';
-import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {RootStackParamList} from '../../navigation/root.navigation';
 import {useSelector} from 'react-redux';
 import {selectUserIsFirstTimeOpen} from '../../store/user/user.selector';
-import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
+import {globalStyles} from '../../utils/styles/styles.utils';
 import CustomButton from '../../components/custom-button/custom-button.component';
 import Logo from '../../components/logo/logo.component';
 import {styles} from './styles.splash-screen';
@@ -28,7 +27,7 @@ const SplashScreen: FC<SplashScreenProps> = ({navigation}) => {
         }
       };
     }
-  }, []);
+  }, [userIsFirstTimeOpen]);
   const navigateToLockScreen = (
     pinStatus: 'choose' | 'enter' | 'locked' | undefined,
   ) => {

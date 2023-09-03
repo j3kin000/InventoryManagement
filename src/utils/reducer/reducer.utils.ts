@@ -1,5 +1,3 @@
-import {AnyAction} from 'redux';
-
 export type Action<T> = {
   type: T;
 };

@@ -8,7 +8,6 @@ import {
   POST_INVENTORY,
   PUT_INVENTORY,
 } from '../../database/inventory-table';
-import {toastAlert} from '../../utils/utils';
 
 export const fetchInventoryAsync = () => async (dispatch: Dispatch) => {
   dispatch(createAction(INVENTORY_ACTION_TYPES.FETCH_INVENTORY_START));

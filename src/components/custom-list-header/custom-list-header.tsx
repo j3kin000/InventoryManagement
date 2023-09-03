@@ -1,6 +1,6 @@
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import React, {Dispatch, FC, SetStateAction, useState} from 'react';
-import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
+import {Text, TouchableOpacity, View} from 'react-native';
+import React, {Dispatch, FC, SetStateAction} from 'react';
+import {globalStyles} from '../../utils/styles/styles.utils';
 import Octicons from 'react-native-vector-icons/Octicons';
 
 export type CustomListHeaderProps = {

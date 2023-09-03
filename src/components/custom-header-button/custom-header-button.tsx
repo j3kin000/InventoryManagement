@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Text} from 'react-native';
 import React, {FC, ReactNode} from 'react';
 import {mainColors} from '../../utils/styles/styles.utils';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -24,5 +24,3 @@ const CustomHeaderButton: FC<CustomHeaderButtonProps> = ({
 };
 
 export default CustomHeaderButton;
-
-const styles = StyleSheet.create({});

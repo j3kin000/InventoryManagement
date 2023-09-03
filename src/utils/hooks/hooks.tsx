@@ -7,7 +7,7 @@ import moment from 'moment';
 import {DebtProps} from '../../store/debt/debt.types';
 
 export const getProductList = (product: ProductProps[]) => {
-  return product.map((item, key) => ({
+  return product.map((item, _) => ({
     uid: item.uid,
     label: item.productName,
     value: item.productName,
@@ -43,37 +43,37 @@ export const onGenerateQR = (
   product: ProductProps[],
   debt: DebtProps[],
 ) => {
-  const inv = [
-    {uid: '1', title: 'a', createdAt: new Date().toString(), isActive: false},
-  ];
-  const prod = [
-    {
-      uid: '1',
-      inventoryUid: '1',
-      image: '',
-      createdAt: new Date().toString(),
-      productName: 'rebisco',
-      stock: '1',
-      originalPrice: '1',
-      salesPrice: '1',
-    },
-  ];
-  const debtes = [
-    {
-      uid: '1',
-      name: 'arnolfo',
-      inventoryUid: 'asa',
-      createdAt: 'asa',
-      items: {
-        uid: '1',
-        image: '',
-        productName: 'rebiscor',
-        salesPrice: '1',
-        numberItems: '1',
-      },
-      isPaid: false,
-    },
-  ];
+  // const inv = [
+  //   {uid: '1', title: 'a', createdAt: new Date().toString(), isActive: false},
+  // ];
+  // const prod = [
+  //   {
+  //     uid: '1',
+  //     inventoryUid: '1',
+  //     image: '',
+  //     createdAt: new Date().toString(),
+  //     productName: 'rebisco',
+  //     stock: '1',
+  //     originalPrice: '1',
+  //     salesPrice: '1',
+  //   },
+  // ];
+  // const debtes = [
+  //   {
+  //     uid: '1',
+  //     name: 'arnolfo',
+  //     inventoryUid: 'asa',
+  //     createdAt: 'asa',
+  //     items: {
+  //       uid: '1',
+  //       image: '',
+  //       productName: 'rebiscor',
+  //       salesPrice: '1',
+  //       numberItems: '1',
+  //     },
+  //     isPaid: false,
+  //   },
+  // ];
   const all = {
     Inventory: inventory,
     Products: product,
@@ -128,8 +128,12 @@ export const exportDataToExcel = () => {
     wbout,
     'ascii',
   )
-    .then(r => {})
-    .catch(e => {});
+    .then(r => {
+      return r;
+    })
+    .catch(e => {
+      throw e;
+    });
 };
 
 export const importDataFromExcel = async () => {
@@ -158,7 +162,7 @@ export const importDataFromExcel = async () => {
       const row = XLSX.utils.encode_row(rowNum);
       const rowData: Record<string, string> = {};
 
-      columns.forEach((column, colIndex) => {
+      columns.forEach((column, _) => {
         const cellAddress = `${column}${row}`;
         const cell = sheet[cellAddress];
         rowData[column] = cell ? cell.v : '';

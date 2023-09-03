@@ -1,9 +1,9 @@
-import {Dimensions, PixelRatio, ToastAndroid} from 'react-native';
+import {Dimensions, PixelRatio} from 'react-native';
 import Toast, {BaseToast, ErrorToast} from 'react-native-toast-message';
 import moment from 'moment-timezone';
 import {ProductProps} from '../store/product/product.types';
 
-const {fontScale, scale, width} = Dimensions.get('screen');
+const {fontScale, scale} = Dimensions.get('screen');
 
 export const windowWidth = Dimensions.get('window').width;
 export const windowHeight = Dimensions.get('window').height;
@@ -108,7 +108,7 @@ export const getHourlyDuration = (date: string) => {
 
   // Check if the duration is exactly an hour
   if (minutesDifference === 60) {
-    return `1h`;
+    return '1h';
   }
 
   // If the duration is more than an hour, convert to hours and minutes
