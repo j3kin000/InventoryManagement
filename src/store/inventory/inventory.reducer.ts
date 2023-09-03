@@ -14,6 +14,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
     case INVENTORY_ACTION_TYPES.POST_INVENTORY_START:
     case INVENTORY_ACTION_TYPES.PUT_INVENTORY_START:
     case INVENTORY_ACTION_TYPES.DELETE_INVENTORY_START:
+    case INVENTORY_ACTION_TYPES.DELETE_ALL_INVENTORY_START:
       return {...state, isLoading: true, error: null};
 
     case INVENTORY_ACTION_TYPES.FETCH_INVENTORY_SUCCESS:
@@ -72,10 +73,25 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
         inventory: state.inventory.filter(item => item.uid !== action.payload),
       };
     }
+    case INVENTORY_ACTION_TYPES.DELETE_ALL_INVENTORY_SUCCESS: {
+      const message = {
+        title: 'Yey!',
+        description: 'Sucesfully Deleted...',
+        type: 'info',
+      };
+      toastAlert(message);
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        inventory: action.payload,
+      };
+    }
     case INVENTORY_ACTION_TYPES.FETCH_INVENTORY_FAILED:
     case INVENTORY_ACTION_TYPES.POST_INVENTORY_FAILED:
     case INVENTORY_ACTION_TYPES.PUT_INVENTORY_FAILED:
-    case INVENTORY_ACTION_TYPES.DELETE_INVENTORY_FAILED: {
+    case INVENTORY_ACTION_TYPES.DELETE_INVENTORY_FAILED:
+    case INVENTORY_ACTION_TYPES.DELETE_ALL_INVENTORY_FAILED: {
       const message = {
         title: 'Ops!',
         description: 'Please try agains...',

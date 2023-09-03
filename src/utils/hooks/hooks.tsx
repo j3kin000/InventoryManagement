@@ -37,6 +37,51 @@ export const sortByDate = (
   );
   return result;
 };
+
+export const onGenerateQR = (
+  inventory: InventoryProps[],
+  product: ProductProps[],
+  debt: DebtProps[],
+) => {
+  const inv = [
+    {uid: '1', title: 'a', createdAt: new Date().toString(), isActive: false},
+  ];
+  const prod = [
+    {
+      uid: '1',
+      inventoryUid: '1',
+      image: '',
+      createdAt: new Date().toString(),
+      productName: 'rebisco',
+      stock: '1',
+      originalPrice: '1',
+      salesPrice: '1',
+    },
+  ];
+  const debtes = [
+    {
+      uid: '1',
+      name: 'arnolfo',
+      inventoryUid: 'asa',
+      createdAt: 'asa',
+      items: {
+        uid: '1',
+        image: '',
+        productName: 'rebiscor',
+        salesPrice: '1',
+        numberItems: '1',
+      },
+      isPaid: false,
+    },
+  ];
+  const all = {
+    Inventory: inventory,
+    Products: product,
+    Debts: debt,
+  };
+
+  return JSON.stringify(all);
+};
 // function to handle exporting
 export const exportDataToExcel = () => {
   // Created Sample data

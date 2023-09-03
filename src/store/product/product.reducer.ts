@@ -14,6 +14,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
     case PRODUCT_ACTION_TYPES.POST_PRODUCT_START:
     case PRODUCT_ACTION_TYPES.PUT_PRODUCT_START:
     case PRODUCT_ACTION_TYPES.DELETE_PRODUCT_START:
+    case PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_START:
       return {...state, isLoading: true, error: null};
 
     case PRODUCT_ACTION_TYPES.FETCH_PRODUCT_SUCCESS:
@@ -72,10 +73,26 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
         product: state.product.filter(item => item.uid !== action.payload),
       };
     }
+
+    case PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_SUCCESS: {
+      const message = {
+        title: 'Yey!',
+        description: 'Sucesfully Deleted...',
+        type: 'info',
+      };
+      toastAlert(message);
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        product: action.payload,
+      };
+    }
     case PRODUCT_ACTION_TYPES.FETCH_PRODUCT_FAILED:
     case PRODUCT_ACTION_TYPES.POST_PRODUCT_FAILED:
     case PRODUCT_ACTION_TYPES.PUT_PRODUCT_FAILED:
-    case PRODUCT_ACTION_TYPES.DELETE_PRODUCT_FAILED: {
+    case PRODUCT_ACTION_TYPES.DELETE_PRODUCT_FAILED:
+    case PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_FAILED: {
       const message = {
         title: 'Ops!',
         description: 'Please try agains...',

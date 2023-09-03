@@ -80,3 +80,14 @@ export const DELETE_INVENTORY = async (uid: string) => {
     return null;
   }
 };
+
+export const DELETE_ALL_INVENTORY = async () => {
+  try {
+    const sqlQuery = `DELETE FROM  ${tableName}`;
+    const parameters: string[] = [];
+    const inventory = await db.execute(sqlQuery, parameters);
+    return inventory;
+  } catch (error) {
+    return null;
+  }
+};

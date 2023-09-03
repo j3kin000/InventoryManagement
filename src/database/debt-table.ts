@@ -79,6 +79,17 @@ export const DELETE_DEBT = async (uid: string) => {
     const debt = await db.execute(sqlQuery, parameters);
     return debt;
   } catch (error) {
-    return null;
+    throw error;
+  }
+};
+
+export const DELETE_ALL_DEBT = async () => {
+  try {
+    const sqlQuery = `DELETE FROM  ${tableName}`;
+    const parameters: string[] = [];
+    const debt = await db.execute(sqlQuery, parameters);
+    return debt;
+  } catch (error) {
+    throw error;
   }
 };

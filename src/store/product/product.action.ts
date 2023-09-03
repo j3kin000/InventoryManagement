@@ -2,6 +2,7 @@ import {Dispatch} from 'redux';
 import {createAction} from '../../utils/reducer/reducer.utils';
 import {PRODUCT_ACTION_TYPES, ProductProps} from './product.types';
 import {
+  DELETE_ALL_PRODUCT,
   DELETE_PRODUCT,
   FETCH_PRODUCT,
   FetchProductProps,
@@ -68,5 +69,22 @@ export const deleteProductAsync =
       }
     } catch (error) {
       dispatch(createAction(PRODUCT_ACTION_TYPES.DELETE_PRODUCT_FAILED, error));
+    }
+  };
+
+export const deleteAllProductAsync =
+  (uid: string) => async (dispatch: Dispatch) => {
+    dispatch(createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_START));
+    try {
+      const result = await DELETE_ALL_PRODUCT();
+      if (result.rowsAffected) {
+        dispatch(
+          createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_SUCCESS, uid),
+        );
+      }
+    } catch (error) {
+      dispatch(
+        createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_FAILED, error),
+      );
     }
   };

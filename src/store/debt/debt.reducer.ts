@@ -14,6 +14,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
     case DEBT_ACTION_TYPES.POST_DEBT_START:
     case DEBT_ACTION_TYPES.PUT_DEBT_START:
     case DEBT_ACTION_TYPES.DELETE_DEBT_START:
+    case DEBT_ACTION_TYPES.DELETE_ALL_DEBT_START:
       return {...state, isLoading: true, error: null};
 
     case DEBT_ACTION_TYPES.FETCH_DEBT_SUCCESS:
@@ -72,10 +73,25 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
         debt: state.debt.filter(item => item.uid !== action.payload),
       };
     }
+    case DEBT_ACTION_TYPES.DELETE_ALL_DEBT_SUCCESS: {
+      const message = {
+        title: 'Yey!',
+        description: 'Sucesfully Deleted...',
+        type: 'info',
+      };
+      toastAlert(message);
+      return {
+        ...state,
+        isLoading: false,
+        error: null,
+        debt: action.payload,
+      };
+    }
     case DEBT_ACTION_TYPES.FETCH_DEBT_FAILED:
     case DEBT_ACTION_TYPES.POST_DEBT_FAILED:
     case DEBT_ACTION_TYPES.PUT_DEBT_FAILED:
-    case DEBT_ACTION_TYPES.DELETE_DEBT_FAILED: {
+    case DEBT_ACTION_TYPES.DELETE_DEBT_FAILED:
+    case DEBT_ACTION_TYPES.DELETE_ALL_DEBT_FAILED: {
       const message = {
         title: 'Ops!',
         description: 'Please try agains...',

@@ -2,6 +2,7 @@ import {Dispatch} from 'redux';
 import {DEBT_ACTION_TYPES, DebtProps} from './debt.types';
 import {createAction} from '../../utils/reducer/reducer.utils';
 import {
+  DELETE_ALL_DEBT,
   DELETE_DEBT,
   FETCH_DEBT,
   POST_DEBT,
@@ -56,5 +57,18 @@ export const deleteDebtAsync = (uid: string) => async (dispatch: Dispatch) => {
     }
   } catch (error) {
     dispatch(createAction(DEBT_ACTION_TYPES.DELETE_DEBT_FAILED, error));
+  }
+};
+
+export const deleteAllDebtAsync = () => async (dispatch: Dispatch) => {
+  dispatch(createAction(DEBT_ACTION_TYPES.DELETE_ALL_DEBT_START));
+  try {
+    const result = await DELETE_ALL_DEBT();
+
+    if (result.rowsAffected) {
+      dispatch(createAction(DEBT_ACTION_TYPES.DELETE_ALL_DEBT_SUCCESS, []));
+    }
+  } catch (error) {
+    dispatch(createAction(DEBT_ACTION_TYPES.DELETE_ALL_DEBT_FAILED, error));
   }
 };

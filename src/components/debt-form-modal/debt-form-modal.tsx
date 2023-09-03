@@ -129,7 +129,7 @@ const DebtFormModal: FC<ProductFormModalProps> = ({
           }}>
           <View style={styles.container}>
             <View style={styles.header}>
-              <Text style={globalStyles.title}>Product Form</Text>
+              <Text style={globalStyles.title}>Debt Form</Text>
               <TouchableOpacity onPress={onCancelHandler}>
                 <AntDesign
                   name="closecircle"

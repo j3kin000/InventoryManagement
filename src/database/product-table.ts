@@ -92,3 +92,14 @@ export const DELETE_PRODUCT = async (uid: string) => {
     throw error;
   }
 };
+
+export const DELETE_ALL_PRODUCT = async () => {
+  try {
+    const sqlQuery = `DELETE FROM  ${tableName}`;
+    const parameters: string[] = [];
+    const inventory = await db.execute(sqlQuery, parameters);
+    return inventory;
+  } catch (error) {
+    throw error;
+  }
+};

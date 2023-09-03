@@ -2,6 +2,7 @@ import {Dispatch} from 'redux';
 import {INVENTORY_ACTION_TYPES, InventoryProps} from './inventory.types';
 import {createAction} from '../../utils/reducer/reducer.utils';
 import {
+  DELETE_ALL_INVENTORY,
   DELETE_INVENTORY,
   FETCH_INVENTORY,
   POST_INVENTORY,
@@ -78,3 +79,20 @@ export const deleteInventoryAsync =
       );
     }
   };
+
+export const deleteAllInventoryAsync = () => async (dispatch: Dispatch) => {
+  dispatch(createAction(INVENTORY_ACTION_TYPES.DELETE_ALL_INVENTORY_START));
+  try {
+    const result = await DELETE_ALL_INVENTORY();
+
+    if (result.rowsAffected) {
+      dispatch(
+        createAction(INVENTORY_ACTION_TYPES.DELETE_ALL_INVENTORY_SUCCESS, []),
+      );
+    }
+  } catch (error) {
+    dispatch(
+      createAction(INVENTORY_ACTION_TYPES.DELETE_ALL_INVENTORY_FAILED, error),
+    );
+  }
+};
