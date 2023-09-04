@@ -11,6 +11,7 @@ This application highlights the used of SQLite Storage and Scanning and Generati
 - react-native-sqlite-storage
 - redux
 - formik
+- react-native-qrcode-svg
 
 ## Contributing
 
