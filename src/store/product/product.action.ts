@@ -71,19 +71,18 @@ export const deleteProductAsync =
     }
   };
 
-export const deleteAllProductAsync =
-  (uid: string) => async (dispatch: Dispatch) => {
-    dispatch(createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_START));
-    try {
-      const result = await DELETE_ALL_PRODUCT();
-      if (result.rowsAffected) {
-        dispatch(
-          createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_SUCCESS, uid),
-        );
-      }
-    } catch (error) {
+export const deleteAllProductAsync = () => async (dispatch: Dispatch) => {
+  dispatch(createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_START));
+  try {
+    const result = await DELETE_ALL_PRODUCT();
+    if (result.rowsAffected) {
       dispatch(
-        createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_FAILED, error),
+        createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_SUCCESS, []),
       );
     }
-  };
+  } catch (error) {
+    dispatch(
+      createAction(PRODUCT_ACTION_TYPES.DELETE_ALL_PRODUCT_FAILED, error),
+    );
+  }
+};

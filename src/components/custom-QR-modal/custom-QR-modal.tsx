@@ -71,7 +71,7 @@ const CustomQRModal: FC<CustomQRModalProps> = ({
                     containerStyle={{flex: 1}}
                     cameraStyle={styles.camera}
                     onRead={onReadScan}
-                    flashMode={RNCamera.Constants.FlashMode.torch}
+                    flashMode={RNCamera.Constants.FlashMode.off}
                     showMarker={true}
                     customMarker={
                       <>
@@ -83,6 +83,8 @@ const CustomQRModal: FC<CustomQRModalProps> = ({
                         />
                       </>
                     }
+                    reactivate={true}
+                    reactivateTimeout={1000}
                   />
                   <View
                     style={{
@@ -216,9 +218,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   camera: {
-    flex: 1,
-    height: windowHeight / 1,
-    backgroundColor: 'red',
+    height: windowHeight / 1.1,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
   },
   rectangle: {
     position: 'absolute',

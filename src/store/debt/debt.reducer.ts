@@ -30,7 +30,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
       const message = {
         title: 'Yey!',
         description: 'Sucesfully Created...',
-        type: 'info',
+        type: 'success',
       };
       toastAlert(message);
       return {
@@ -45,7 +45,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
       const message = {
         title: 'Yey!',
         description: 'Sucesfully Updated...',
-        type: 'info',
+        type: 'success',
       };
       toastAlert(message);
 
@@ -63,7 +63,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
       const message = {
         title: 'Yey!',
         description: 'Sucesfully Deleted...',
-        type: 'info',
+        type: 'success',
       };
       toastAlert(message);
       return {
@@ -77,7 +77,7 @@ export default (state = INITIAL_STATE, action: AnyAction) => {
       const message = {
         title: 'Yey!',
         description: 'Sucesfully Deleted...',
-        type: 'info',
+        type: 'success',
       };
       toastAlert(message);
       return {

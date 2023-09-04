@@ -81,8 +81,6 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-        resConfigs "en", "hdpi", "xhdpi" // Include only English, hdpi, and xhdpi resources
-
     }
     signingConfigs {
         debug {

@@ -26,46 +26,14 @@ export const scaleFont = (fontSize = 0) => {
 //     return (PixelRatio.getPixelSizeForLayoutSize(fontSize) * setScale) / scale
 //   }
 
-const toastConfig = {
-  success: (props: any) => (
-    <BaseToast
-      {...props}
-      style={{borderLeftColor: 'pink'}}
-      contentContainerStyle={{paddingHorizontal: 15}}
-      text1Style={{
-        fontSize: 200,
-        fontWeight: '400',
-      }}
-      text2Style={{
-        fontSize: 15,
-        fontWeight: '400',
-      }}
-    />
-  ),
-
-  error: (props: any) => (
-    <ErrorToast
-      {...props}
-      text1Style={{
-        fontSize: 200,
-      }}
-      text2Style={{
-        fontSize: 15,
-      }}
-    />
-  ),
-};
-
-export default toastConfig;
-
 export const toastAlert = ({title = '', type = 'info', description = ''}) => {
   Toast.show({
     type: type,
     text1: title,
     text2: description,
 
-    position: 'bottom', // You can set the position to 'bottom' to ensure it appears at the bottom
-    topOffset: 60, // Adjust this value to position the toast message at the desired distance from the bottom
+    position: 'top', // You can set the position to 'bottom' to ensure it appears at the bottom
+    topOffset: 20, // Adjust this value to position the toast message at the desired distance from the bottom
   });
 };
 

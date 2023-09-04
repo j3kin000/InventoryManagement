@@ -20,11 +20,17 @@ import {selectDebt} from '../../store/debt/debt.selector';
 import {BarCodeReadEvent} from 'react-native-camera';
 import {onGenerateQR} from '../../utils/hooks/hooks';
 import {useAppDispatch} from '../../utils/reducer/reducerHooks.utils';
-import {postInventoryAsync} from '../../store/inventory/inventory.action';
+import {
+  deleteAllInventoryAsync,
+  postInventoryAsync,
+} from '../../store/inventory/inventory.action';
 import {InventoryProps} from '../../store/inventory/inventory.types';
-import {postDebtAsync} from '../../store/debt/debt.action';
+import {deleteAllDebtAsync, postDebtAsync} from '../../store/debt/debt.action';
 import {DebtProps} from '../../store/debt/debt.types';
-import {postProductAsync} from '../../store/product/product.action';
+import {
+  deleteAllProductAsync,
+  postProductAsync,
+} from '../../store/product/product.action';
 import CustomLoadingIndicator from '../custom-loading-indicator/custom-loading-indicator';
 
 const CustomHeader = () => {
@@ -47,42 +53,58 @@ const CustomHeader = () => {
     [inventory, products, debt],
   );
 
-  console.log('QRADATA', qrData);
   const onReadScan = (e: BarCodeReadEvent) => {
-    if (!e.data) {
-      const message = {
-        title: 'Ops!',
-        description: 'QR Code is Invalid',
-        type: 'danger',
-      };
-      toastAlert(message);
-      return;
+    try {
+      if (!e.data) {
+        const message = {
+          title: 'Ops!',
+          description: 'QR Code is Invalid',
+          type: 'danger',
+        };
+        toastAlert(message);
+        return;
+      }
+      const scannedData = JSON.parse(e.data);
+      if (
+        !Array.isArray(scannedData.Inventory) ||
+        !Array.isArray(scannedData.Products) ||
+        !Array.isArray(scannedData.Debts)
+      ) {
+        const message = {
+          title: 'Ops!',
+          description: 'QR Code is Invalid',
+          type: 'danger',
+        };
+        toastAlert(message);
+        return;
+      }
+      setIsLoading(true);
+      dispatch(deleteAllInventoryAsync());
+      dispatch(deleteAllProductAsync());
+      dispatch(deleteAllDebtAsync());
+      scannedData.Inventory.map((item: InventoryProps, index: number) => {
+        dispatch(postInventoryAsync(item));
+      });
+      scannedData.Products.map((item: ProductProps, index: number) => {
+        dispatch(postProductAsync(item));
+      });
+      scannedData.Debts.map((item: DebtProps, index: number) => {
+        dispatch(postDebtAsync(item));
+      });
+      setIsLoading(false);
+      setIsOpenModal(false);
+      toastAlert({
+        title: 'Scan QR',
+        type: 'success',
+        description: 'Succesfully Scan a data!!!',
+      });
+    } catch (error) {
+      toastAlert({
+        title: 'Scan QR',
+        type: 'error',
+        description: 'Cannot Scan Qr as it is invalid',
+      });
     }
-    const scannedData = JSON.parse(e.data);
-    if (
-      !Array.isArray(scannedData.Inventory) ||
-      !Array.isArray(scannedData.Products) ||
-      !Array.isArray(scannedData.Debts)
-    ) {
-      const message = {
-        title: 'Ops!',
-        description: 'QR Code is Invalid',
-        type: 'danger',
-      };
-      toastAlert(message);
-      return;
-    }
-    setIsLoading(true);
-    scannedData.Inventory.map((item: InventoryProps, index: number) => {
-      dispatch(postInventoryAsync(item));
-    });
-    scannedData.Products.map((item: ProductProps, index: number) => {
-      dispatch(postProductAsync(item));
-    });
-    scannedData.Debts.map((item: DebtProps, index: number) => {
-      dispatch(postDebtAsync(item));
-    });
-    setIsLoading(false);
   };
   useEffect(() => {
     const getAllProducts = async () => {
@@ -114,8 +136,8 @@ const CustomHeader = () => {
           totalGinansya += resultGinansya;
           totalPuhunan += resultPuhunan;
         }
-        setGinansya(totalGinansya);
-        setPuhunan(totalPuhunan);
+        setGinansya(totalGinansya.toString());
+        setPuhunan(totalPuhunan.toString());
       } catch (error) {
         console.error('Error fetching products:', error);
       }

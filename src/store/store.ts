@@ -7,6 +7,7 @@ import {rootReducer} from './root-reducer';
 export type RootState = ReturnType<typeof rootReducer>;
 
 const persistConfig = {
+  timeout: 500,
   key: 'root',
   storage: AsyncStorage,
   // blacklist: ['user'],
