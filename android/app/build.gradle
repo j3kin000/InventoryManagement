@@ -75,6 +75,7 @@ android {
 
     namespace "com.inventorymanagement"
     defaultConfig {
+        missingDimensionStrategy 'react-native-camera', 'general' 
         applicationId "com.inventorymanagement"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
@@ -82,6 +83,12 @@ android {
         versionName "1.0"
     }
     signingConfigs {
+        release {
+      storeFile file('your_key_name.keystore')
+      storePassword 'your_key_store_password'
+      keyAlias 'your_key_alias'
+      keyPassword 'your_key_file_alias_password'
+    }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
@@ -105,8 +112,9 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    implementation project(':react-native-fs')
     implementation("com.facebook.react:react-android")
-
+    implementation project(':react-native-vector-icons')
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.squareup.okhttp3', module:'okhttp'
@@ -121,3 +129,4 @@ dependencies {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
