@@ -21,6 +21,7 @@ import CustomButton from '../custom-button/custom-button.component';
 import {globalStyles, mainColors} from '../../utils/styles/styles.utils';
 import {DebtProps, itemProps} from '../../store/debt/debt.types';
 import {GestureResponderEvent} from 'react-native';
+import RNPickerSelect from 'react-native-picker-select-gian';
 
 type ProductFormModalProps = {
   isOpenModal: boolean;

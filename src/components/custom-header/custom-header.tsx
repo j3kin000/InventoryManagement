@@ -99,6 +99,7 @@ const CustomHeader = () => {
         description: 'Succesfully Scan a data!!!',
       });
     } catch (error) {
+      setIsOpenModal(false);
       toastAlert({
         title: 'Scan QR',
         type: 'error',
